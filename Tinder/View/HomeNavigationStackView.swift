@@ -27,6 +27,7 @@ class HomeNavigationStackView: UIStackView {
 
         imageView.image = UIImage(resource: .appIcon)
         imageView.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        imageView.contentMode = .scaleAspectFit
 
         return imageView
     }()
