@@ -18,6 +18,7 @@ class HomeController: UIViewController {
 
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemPink
+        view.clipsToBounds = true
         view.layer.cornerRadius = 8
 
         return view
@@ -31,6 +32,7 @@ class HomeController: UIViewController {
         super.viewDidLoad()
 
         setupViews()
+        configureCards()
     }
 
 }
@@ -38,6 +40,34 @@ class HomeController: UIViewController {
 // MARK: - Helpers
 
 extension HomeController {
+
+    private func configureCards() {
+        let cardView1 = CardView()
+        let cardView2 = CardView()
+
+        deckView.addSubview(cardView1)
+        deckView.addSubview(cardView2)
+
+        // cardView1
+        NSLayoutConstraint.activate([
+            cardView1.topAnchor.constraint(equalTo: deckView.topAnchor),
+            cardView1.leadingAnchor.constraint(equalTo: deckView.leadingAnchor),
+            cardView1.trailingAnchor.constraint(
+                equalTo: deckView.trailingAnchor
+            ),
+            cardView1.bottomAnchor.constraint(equalTo: deckView.bottomAnchor),
+        ])
+
+        // cardView2
+        NSLayoutConstraint.activate([
+            cardView2.topAnchor.constraint(equalTo: deckView.topAnchor),
+            cardView2.leadingAnchor.constraint(equalTo: deckView.leadingAnchor),
+            cardView2.trailingAnchor.constraint(
+                equalTo: deckView.trailingAnchor
+            ),
+            cardView2.bottomAnchor.constraint(equalTo: deckView.bottomAnchor),
+        ])
+    }
 
     private func setupViews() {
         let stackView = UIStackView(arrangedSubviews: [
