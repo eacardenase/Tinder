@@ -96,6 +96,8 @@ extension BottomControlsStackView {
         ].forEach { addArrangedSubview($0) }
 
         distribution = .equalCentering
+
+        heightAnchor.constraint(equalToConstant: 100).isActive = true
     }
 
 }

@@ -76,6 +76,8 @@ extension HomeNavigationStackView {
             bottom: 0,
             trailing: 16
         )
+
+        heightAnchor.constraint(equalToConstant: 80).isActive = true
     }
 
 }
