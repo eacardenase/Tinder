@@ -21,6 +21,15 @@ class CardView: UIView {
         return _imageView
     }()
 
+    let gradientLayer: CAGradientLayer = {
+        let gradient = CAGradientLayer()
+
+        gradient.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]
+        gradient.locations = [0.5, 1.1]
+
+        return gradient
+    }()
+
     private let infoLabel: UILabel = {
         let label = UILabel()
 
@@ -73,6 +82,10 @@ class CardView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func layoutSubviews() {
+        gradientLayer.frame = frame
+    }
+
 }
 
 // MARK: - Helpers
@@ -83,6 +96,9 @@ extension CardView {
         translatesAutoresizingMaskIntoConstraints = false
 
         addSubview(imageView)
+
+        layer.addSublayer(gradientLayer)
+
         addSubview(infoLabel)
         addSubview(infoButton)
 
@@ -100,10 +116,6 @@ extension CardView {
                 equalTo: leadingAnchor,
                 constant: 16
             ),
-            infoLabel.trailingAnchor.constraint(
-                equalTo: trailingAnchor,
-                constant: -16
-            ),
             infoLabel.bottomAnchor.constraint(
                 equalTo: bottomAnchor,
                 constant: -16
@@ -116,6 +128,10 @@ extension CardView {
             infoButton.widthAnchor.constraint(equalTo: infoButton.heightAnchor),
             infoButton.centerYAnchor.constraint(
                 equalTo: infoLabel.centerYAnchor
+            ),
+            infoButton.leadingAnchor.constraint(
+                equalTo: infoLabel.trailingAnchor,
+                constant: 8
             ),
             infoButton.trailingAnchor.constraint(
                 equalTo: trailingAnchor,
