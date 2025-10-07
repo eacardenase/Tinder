@@ -7,6 +7,11 @@
 
 import UIKit
 
+enum SwipeDirection: Int {
+    case left = -1
+    case right = 1
+}
+
 class CardView: UIView {
 
     // MARK: - Properties
@@ -171,9 +176,33 @@ extension CardView {
     }
 
     private func resetCardPosition(sender: UIPanGestureRecognizer) {
-        UIViewPropertyAnimator(duration: 0.75, dampingRatio: 0.7) {
-            self.transform = .identity
-        }.startAnimation()
+        let translation = sender.translation(in: nil)
+        let direction: SwipeDirection = translation.x > 100 ? .right : .left
+        let shouldDismissCard = abs(translation.x) > 100
+
+        let animation = UIViewPropertyAnimator(
+            duration: 0.75,
+            dampingRatio: 0.7
+        ) {
+            if shouldDismissCard {
+                let xTransalation = CGFloat(direction.rawValue) * 1000
+                let offScreenTransform = self.transform.translatedBy(
+                    x: xTransalation,
+                    y: 0
+                )
+
+                self.transform = offScreenTransform
+            } else {
+                self.transform = .identity
+            }
+        }
+
+        animation.startAnimation()
+        animation.addCompletion { _ in
+            if shouldDismissCard {
+                self.removeFromSuperview()
+            }
+        }
     }
 
 }
