@@ -18,7 +18,6 @@ class HomeController: UIViewController {
 
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemPink
-        view.clipsToBounds = true
         view.layer.cornerRadius = 8
 
         return view

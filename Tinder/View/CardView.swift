@@ -76,6 +76,7 @@ class CardView: UIView {
         super.init(frame: frame)
 
         setupViews()
+        configureGestureRecognizers()
     }
 
     required init?(coder: NSCoder) {
@@ -94,6 +95,8 @@ extension CardView {
 
     private func setupViews() {
         translatesAutoresizingMaskIntoConstraints = false
+        clipsToBounds = true
+        layer.cornerRadius = 8
 
         addSubview(imageView)
 
@@ -138,6 +141,62 @@ extension CardView {
                 constant: -16
             ),
         ])
+    }
+
+    private func configureGestureRecognizers() {
+        let panGesture = UIPanGestureRecognizer(
+            target: self,
+            action: #selector(handlePanGesture)
+        )
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(handleChangePhoto)
+        )
+
+        addGestureRecognizer(panGesture)
+        addGestureRecognizer(tapGesture)
+    }
+
+    private func panCard(sender: UIPanGestureRecognizer) {
+        let translation = sender.translation(in: nil)
+
+        let degrees: CGFloat = translation.x / 20
+        let angle = degrees * .pi / 180
+        let rotationalTransform = CGAffineTransform(rotationAngle: angle)
+
+        self.transform = rotationalTransform.translatedBy(
+            x: translation.x,
+            y: translation.y
+        )
+    }
+
+    private func resetCardPosition(sender: UIPanGestureRecognizer) {
+        UIViewPropertyAnimator(duration: 0.75, dampingRatio: 0.7) {
+            self.transform = .identity
+        }.startAnimation()
+    }
+
+}
+
+// MARK: - Actions
+
+extension CardView {
+
+    @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
+
+        switch sender.state {
+        case .began:
+            print("DEBUG: Began")
+        case .changed:
+            panCard(sender: sender)
+        case .ended:
+            resetCardPosition(sender: sender)
+        default: break
+        }
+    }
+
+    @objc func handleChangePhoto(_ sender: UITapGestureRecognizer) {
+        print(#function)
     }
 
 }
