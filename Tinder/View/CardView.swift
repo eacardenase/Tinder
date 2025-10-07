@@ -16,12 +16,14 @@ class CardView: UIView {
 
     // MARK: - Properties
 
-    private let imageView: UIImageView = {
+    private let viewModel: CardViewModel
+
+    private lazy var imageView: UIImageView = {
         let _imageView = UIImageView()
 
         _imageView.translatesAutoresizingMaskIntoConstraints = false
         _imageView.contentMode = .scaleAspectFill
-        _imageView.image = UIImage(resource: .jane1)
+        _imageView.image = viewModel.user.images.first
 
         return _imageView
     }()
@@ -35,30 +37,12 @@ class CardView: UIView {
         return gradient
     }()
 
-    private let infoLabel: UILabel = {
+    private lazy var infoLabel: UILabel = {
         let label = UILabel()
-
-        let attributedText = NSMutableAttributedString(
-            string: "Jane Doe",
-            attributes: [
-                .font: UIFont.systemFont(ofSize: 32, weight: .heavy),
-                .foregroundColor: UIColor.white,
-            ]
-        )
-
-        attributedText.append(
-            NSAttributedString(
-                string: "  18",
-                attributes: [
-                    .font: UIFont.systemFont(ofSize: 24),
-                    .foregroundColor: UIColor.white,
-                ]
-            )
-        )
 
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 2
-        label.attributedText = attributedText
+        label.attributedText = viewModel.userInfoText
 
         return label
     }()
@@ -77,8 +61,10 @@ class CardView: UIView {
 
     // MARK: - Initializers
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: CardViewModel) {
+        self.viewModel = viewModel
+
+        super.init(frame: .zero)
 
         setupViews()
         configureGestureRecognizers()
@@ -87,6 +73,8 @@ class CardView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    // MARK: - View Lifecycle
 
     override func layoutSubviews() {
         gradientLayer.frame = frame
