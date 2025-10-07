@@ -177,8 +177,11 @@ extension CardView {
 
     private func resetCardPosition(sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: nil)
-        let direction: SwipeDirection = translation.x > 100 ? .right : .left
-        let shouldDismissCard = abs(translation.x) > 100
+        let swapThreshold: CGFloat = 100
+
+        let shouldDismissCard = abs(translation.x) > swapThreshold
+        let direction: SwipeDirection =
+            translation.x > swapThreshold ? .right : .left
 
         let animation = UIViewPropertyAnimator(
             duration: 0.75,
@@ -192,12 +195,15 @@ extension CardView {
                 )
 
                 self.transform = offScreenTransform
-            } else {
-                self.transform = .identity
+
+                return
             }
+
+            self.transform = .identity
         }
 
         animation.startAnimation()
+
         animation.addCompletion { _ in
             if shouldDismissCard {
                 self.removeFromSuperview()
@@ -215,7 +221,7 @@ extension CardView {
 
         switch sender.state {
         case .began:
-            print("DEBUG: Began")
+            superview?.subviews.forEach { $0.layer.removeAllAnimations() }
         case .changed:
             panCard(sender: sender)
         case .ended:
