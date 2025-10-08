@@ -16,14 +16,14 @@ class CardView: UIView {
 
     // MARK: - Properties
 
-    private let viewModel: CardViewModel
+    private var viewModel: CardViewModel
 
     private lazy var imageView: UIImageView = {
         let _imageView = UIImageView()
 
         _imageView.translatesAutoresizingMaskIntoConstraints = false
         _imageView.contentMode = .scaleAspectFill
-        _imageView.image = viewModel.user.images.first
+        _imageView.image = viewModel.profileImage
 
         return _imageView
     }()
@@ -219,7 +219,16 @@ extension CardView {
     }
 
     @objc func handleChangePhoto(_ sender: UITapGestureRecognizer) {
-        print(#function)
+        let location = sender.location(in: nil).x
+        let shouldShowNextPhoto = location > self.frame.width / 2
+
+        if shouldShowNextPhoto {
+            viewModel.showNextPhoto()
+        } else {
+            viewModel.showPreviousPhoto()
+        }
+
+        imageView.image = viewModel.profileImage
     }
 
 }
