@@ -35,7 +35,11 @@ struct CardViewModel {
         return attributedText
     }
 
-    private var imageIndex = 0
+    private var imageIndex = 0 {
+        didSet {
+            profileImage = user.images[imageIndex]
+        }
+    }
 
     lazy var profileImage = user.images.first
 
@@ -51,20 +55,16 @@ struct CardViewModel {
 
 extension CardViewModel {
 
-    mutating func showNextPhoto() {
+    mutating func prepareNextPhoto() {
         guard imageIndex < user.images.count - 1 else { return }
 
         imageIndex += 1
-
-        profileImage = user.images[imageIndex]
     }
 
-    mutating func showPreviousPhoto() {
+    mutating func preparePreviousPhoto() {
         guard imageIndex > 0 else { return }
 
         imageIndex -= 1
-
-        profileImage = user.images[imageIndex]
     }
 
 }

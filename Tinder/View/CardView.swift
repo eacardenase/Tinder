@@ -223,9 +223,9 @@ extension CardView {
         let shouldShowNextPhoto = location > self.frame.width / 2
 
         if shouldShowNextPhoto {
-            viewModel.showNextPhoto()
+            viewModel.prepareNextPhoto()
         } else {
-            viewModel.showPreviousPhoto()
+            viewModel.preparePreviousPhoto()
         }
 
         imageView.image = viewModel.profileImage
