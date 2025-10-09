@@ -21,7 +21,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: scene)
 
         window?.rootViewController = UINavigationController(rootViewController: LoginController())
-        window?.backgroundColor = .white
 
         window?.makeKeyAndVisible()
     }

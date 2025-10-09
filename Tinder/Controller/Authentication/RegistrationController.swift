@@ -145,7 +145,11 @@ extension RegistrationController {
 extension RegistrationController {
 
     @objc func addPhotoButtonTapped(_ sender: UIButton) {
-        print(#function)
+        let imagePicker = UIImagePickerController()
+
+        imagePicker.delegate = self
+
+        present(imagePicker, animated: true)
     }
 
     @objc func signUpButtonTapped(_ sender: UIButton) {
@@ -154,6 +158,34 @@ extension RegistrationController {
 
     @objc func showLoginButtonTapped(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
+    }
+
+}
+
+// MARK: - UIImagePickerControllerDelegate, UINavigationControllerDelegate
+
+extension RegistrationController: UIImagePickerControllerDelegate,
+    UINavigationControllerDelegate
+{
+
+    func imagePickerController(
+        _ picker: UIImagePickerController,
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey:
+            Any]
+    ) {
+        let image = info[.originalImage] as? UIImage
+
+        addPhotoButton.imageView?.contentMode = .scaleAspectFill
+        addPhotoButton.clipsToBounds = true
+        addPhotoButton.layer.cornerRadius = 16
+        addPhotoButton.layer.borderWidth = 1.5
+        addPhotoButton.layer.borderColor = UIColor(white: 1, alpha: 0.7).cgColor
+        addPhotoButton.setImage(
+            image?.withRenderingMode(.alwaysOriginal),
+            for: .normal
+        )
+
+        dismiss(animated: true)
     }
 
 }
