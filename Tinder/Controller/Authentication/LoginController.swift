@@ -11,6 +11,8 @@ class LoginController: UIViewController {
 
     // MARK: - Properties
 
+    private var viewModel = LoginViewModel()
+
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
         let image = UIImage(resource: .appIcon).withRenderingMode(
@@ -24,11 +26,29 @@ class LoginController: UIViewController {
         return imageView
     }()
 
-    private let emailTextField = AuthTextField(placeholder: "Email")
-    private let passwordTextField = AuthTextField(
-        placeholder: "Password",
-        isSecure: true
-    )
+    private lazy var emailTextField: UITextField = {
+        let textField = AuthTextField(placeholder: "Email")
+
+        textField.addTarget(
+            self,
+            action: #selector(textDidChange),
+            for: .editingChanged
+        )
+
+        return textField
+    }()
+
+    private lazy var passwordTextField: UITextField = {
+        let textField = AuthTextField(placeholder: "Password", isSecure: true)
+
+        textField.addTarget(
+            self,
+            action: #selector(textDidChange),
+            for: .editingChanged
+        )
+
+        return textField
+    }()
 
     private lazy var loginButton: UIButton = {
         let button = AuthButton(withTitle: "Log In")
@@ -135,6 +155,16 @@ extension LoginController {
 
 extension LoginController {
 
+    @objc func textDidChange(_ sender: UITextField) {
+        if sender === emailTextField {
+            viewModel.email = sender.text
+        } else if sender === passwordTextField {
+            viewModel.password = sender.text
+        }
+
+        updateForm()
+    }
+
     @objc func loginButtonTapped(_ sender: UIButton) {
         print(#function)
     }
@@ -143,6 +173,18 @@ extension LoginController {
         let controller = RegistrationController()
 
         navigationController?.pushViewController(controller, animated: true)
+    }
+
+}
+
+// MARK: - AuthenticationControllerProtocol
+
+extension LoginController: AuthenticationProtocol {
+
+    func updateForm() {
+        loginButton.isEnabled = viewModel.shouldEnableButton
+        loginButton.backgroundColor = viewModel.buttonBackgroundColor
+        loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
     }
 
 }

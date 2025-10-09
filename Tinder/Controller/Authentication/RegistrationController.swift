@@ -11,6 +11,8 @@ class RegistrationController: UIViewController {
 
     // MARK: - Properties
 
+    var viewModel = RegistrationViewModel()
+
     private lazy var addPhotoButton: UIButton = {
         let button = UIButton(type: .system)
         let imageConf = UIImage.SymbolConfiguration(pointSize: 100)
@@ -22,6 +24,7 @@ class RegistrationController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .white
         button.setImage(buttonImage, for: .normal)
+        button.clipsToBounds = true
         button.addTarget(
             self,
             action: #selector(addPhotoButtonTapped),
@@ -31,12 +34,41 @@ class RegistrationController: UIViewController {
         return button
     }()
 
-    private let fullnameTextField = AuthTextField(placeholder: "Full Name")
-    private let emailTextField = AuthTextField(placeholder: "Email")
-    private let passwordTextField = AuthTextField(
-        placeholder: "Password",
-        isSecure: true
-    )
+    private lazy var fullnameTextField: UITextField = {
+        let textField = AuthTextField(placeholder: "Full Name")
+
+        textField.addTarget(
+            self,
+            action: #selector(textDidChange),
+            for: .editingChanged
+        )
+
+        return textField
+    }()
+
+    private lazy var emailTextField: UITextField = {
+        let textField = AuthTextField(placeholder: "Email")
+
+        textField.addTarget(
+            self,
+            action: #selector(textDidChange),
+            for: .editingChanged
+        )
+
+        return textField
+    }()
+
+    private lazy var passwordTextField: UITextField = {
+        let textField = AuthTextField(placeholder: "Password", isSecure: true)
+
+        textField.addTarget(
+            self,
+            action: #selector(textDidChange),
+            for: .editingChanged
+        )
+
+        return textField
+    }()
 
     private lazy var showLoginButton: UIButton = {
         let button = AttributedAuthButton(
@@ -144,6 +176,18 @@ extension RegistrationController {
 
 extension RegistrationController {
 
+    @objc func textDidChange(_ sender: UITextField) {
+        if sender === fullnameTextField {
+            viewModel.fullname = fullnameTextField.text
+        } else if sender === emailTextField {
+            viewModel.email = emailTextField.text
+        } else {
+            viewModel.password = passwordTextField.text
+        }
+
+        updateForm()
+    }
+
     @objc func addPhotoButtonTapped(_ sender: UIButton) {
         let imagePicker = UIImagePickerController()
 
@@ -176,7 +220,6 @@ extension RegistrationController: UIImagePickerControllerDelegate,
         let image = info[.originalImage] as? UIImage
 
         addPhotoButton.imageView?.contentMode = .scaleAspectFill
-        addPhotoButton.clipsToBounds = true
         addPhotoButton.layer.cornerRadius = 16
         addPhotoButton.layer.borderWidth = 1.5
         addPhotoButton.layer.borderColor = UIColor(white: 1, alpha: 0.7).cgColor
@@ -186,6 +229,18 @@ extension RegistrationController: UIImagePickerControllerDelegate,
         )
 
         dismiss(animated: true)
+    }
+
+}
+
+// MARK: - AuthenticationProtocol
+
+extension RegistrationController: AuthenticationProtocol {
+
+    func updateForm() {
+        signUpButton.isEnabled = viewModel.shouldEnableButton
+        signUpButton.backgroundColor = viewModel.buttonBackgroundColor
+        signUpButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
     }
 
 }
