@@ -43,27 +43,11 @@ class LoginController: UIViewController {
     }()
 
     private lazy var showRegistrationButton: UIButton = {
-        let button = UIButton(type: .system)
-        let attributedTitle = NSMutableAttributedString(
-            string: "Don't have an account? ",
-            attributes: [
-                .font: UIFont.systemFont(ofSize: 16),
-                .foregroundColor: UIColor.white,
-            ]
+        let button = AttributedAuthButton(
+            message: "Don't have an account? ",
+            actionText: "Sign Up",
         )
 
-        attributedTitle.append(
-            NSAttributedString(
-                string: "Sign Up",
-                attributes: [
-                    .font: UIFont.boldSystemFont(ofSize: 16),
-                    .foregroundColor: UIColor.white,
-                ]
-            )
-        )
-
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setAttributedTitle(attributedTitle, for: .normal)
         button.addTarget(
             self,
             action: #selector(showRegistrationButtonTapped),
