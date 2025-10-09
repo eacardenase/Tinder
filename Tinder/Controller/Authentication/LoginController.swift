@@ -30,6 +30,49 @@ class LoginController: UIViewController {
         isSecure: true
     )
 
+    private lazy var loginButton: UIButton = {
+        let button = AuthButton(withTitle: "Log In")
+
+        button.addTarget(
+            self,
+            action: #selector(loginButtonTapped),
+            for: .touchUpInside
+        )
+
+        return button
+    }()
+
+    private lazy var showRegistrationButton: UIButton = {
+        let button = UIButton(type: .system)
+        let attributedTitle = NSMutableAttributedString(
+            string: "Don't have an account? ",
+            attributes: [
+                .font: UIFont.systemFont(ofSize: 16),
+                .foregroundColor: UIColor.white,
+            ]
+        )
+
+        attributedTitle.append(
+            NSAttributedString(
+                string: "Sign Up",
+                attributes: [
+                    .font: UIFont.boldSystemFont(ofSize: 16),
+                    .foregroundColor: UIColor.white,
+                ]
+            )
+        )
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        button.addTarget(
+            self,
+            action: #selector(showRegistrationButtonTapped),
+            for: .touchUpInside
+        )
+
+        return button
+    }()
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -50,6 +93,7 @@ extension LoginController {
         let stackView = UIStackView(arrangedSubviews: [
             emailTextField,
             passwordTextField,
+            loginButton,
         ])
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -58,6 +102,7 @@ extension LoginController {
 
         view.addSubview(iconImageView)
         view.addSubview(stackView)
+        view.addSubview(showRegistrationButton)
 
         // iconImageView
         NSLayoutConstraint.activate([
@@ -87,6 +132,33 @@ extension LoginController {
                 constant: -32
             ),
         ])
+
+        // showRegistrationButton
+        NSLayoutConstraint.activate([
+            showRegistrationButton.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+            showRegistrationButton.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                constant: -8
+            ),
+        ])
+    }
+
+}
+
+// MARK: - Actions
+
+extension LoginController {
+
+    @objc func loginButtonTapped(_ sender: UIButton) {
+        print(#function)
+    }
+
+    @objc func showRegistrationButtonTapped(_ sender: UIButton) {
+        let controller = RegistrationController()
+
+        navigationController?.pushViewController(controller, animated: true)
     }
 
 }
