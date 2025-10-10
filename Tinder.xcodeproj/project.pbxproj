@@ -12,11 +12,13 @@
 		A5E34B262E98859600B35212 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A5E34B252E98859600B35212 /* FirebaseFirestore */; };
 		A5E34B282E98859600B35212 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = A5E34B272E98859600B35212 /* FirebaseStorage */; };
 		A5E34B2A2E98871300B35212 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A5E34B292E98871300B35212 /* GoogleService-Info.plist */; };
+		A5E34B2C2E98888A00B35212 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A5E34B2B2E98888A00B35212 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A57673F32E9189E8007E8A12 /* Tinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5E34B292E98871300B35212 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A5E34B2B2E98888A00B35212 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -58,6 +60,7 @@
 		A57673EA2E9189E8007E8A12 = {
 			isa = PBXGroup;
 			children = (
+				A5E34B2B2E98888A00B35212 /* README.md */,
 				A57673F52E9189E8007E8A12 /* Tinder */,
 				A57673F42E9189E8007E8A12 /* Products */,
 				A5E34B292E98871300B35212 /* GoogleService-Info.plist */,
@@ -144,6 +147,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5E34B2A2E98871300B35212 /* GoogleService-Info.plist in Resources */,
+				A5E34B2C2E98888A00B35212 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
