@@ -1,1 +1,1 @@
-#  Tinder iOS app built in UIKit with Swift
+#  Tinder Clone written in Swift using UIKit
