@@ -12,6 +12,7 @@ class RegistrationController: UIViewController {
     // MARK: - Properties
 
     var viewModel = RegistrationViewModel()
+    private var profileImage: UIImage?
 
     private lazy var addPhotoButton: UIButton = {
         let button = UIButton(type: .system)
@@ -37,6 +38,7 @@ class RegistrationController: UIViewController {
     private lazy var fullnameTextField: UITextField = {
         let textField = AuthTextField(placeholder: "Full Name")
 
+        textField.autocapitalizationType = .words
         textField.addTarget(
             self,
             action: #selector(textDidChange),
@@ -49,6 +51,7 @@ class RegistrationController: UIViewController {
     private lazy var emailTextField: UITextField = {
         let textField = AuthTextField(placeholder: "Email")
 
+        textField.keyboardType = .emailAddress
         textField.addTarget(
             self,
             action: #selector(textDidChange),
@@ -180,7 +183,7 @@ extension RegistrationController {
         if sender === fullnameTextField {
             viewModel.fullname = fullnameTextField.text
         } else if sender === emailTextField {
-            viewModel.email = emailTextField.text
+            viewModel.email = emailTextField.text?.lowercased()
         } else {
             viewModel.password = passwordTextField.text
         }
@@ -197,7 +200,40 @@ extension RegistrationController {
     }
 
     @objc func signUpButtonTapped(_ sender: UIButton) {
-        print(#function)
+        guard
+            let fullname = viewModel.fullname,
+            let email = viewModel.email,
+            let password = viewModel.password
+        else {
+            return
+        }
+
+        guard let profileImage else {
+            let alertController = UIAlertController(
+                title: "Profile Photo",
+                message: "Please provide an image to be used as profile photo.",
+                preferredStyle: .alert
+            )
+
+            alertController.addAction(
+                UIAlertAction(title: "OK", style: .default)
+            )
+
+            present(alertController, animated: true)
+
+            return
+        }
+
+        let credentials = AuthCredentials(
+            fullname: fullname,
+            email: email,
+            password: password,
+            profileImage: profileImage
+        )
+
+        AuthService.createUser(wih: credentials) { result in
+            print(result)
+        }
     }
 
     @objc func showLoginButtonTapped(_ sender: UIButton) {
@@ -218,6 +254,8 @@ extension RegistrationController: UIImagePickerControllerDelegate,
             Any]
     ) {
         let image = info[.originalImage] as? UIImage
+
+        profileImage = image
 
         addPhotoButton.imageView?.contentMode = .scaleAspectFill
         addPhotoButton.layer.cornerRadius = 16

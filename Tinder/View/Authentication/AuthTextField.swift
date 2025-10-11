@@ -30,6 +30,7 @@ class AuthTextField: UITextField {
         tintColor = .white
         backgroundColor = .white.withAlphaComponent(0.2)
         keyboardAppearance = .dark
+        keyboardType = .asciiCapable
         autocapitalizationType = .none
         autocorrectionType = .no
         isSecureTextEntry = isSecure

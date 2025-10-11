@@ -29,6 +29,7 @@ class LoginController: UIViewController {
     private lazy var emailTextField: UITextField = {
         let textField = AuthTextField(placeholder: "Email")
 
+        textField.keyboardType = .emailAddress
         textField.addTarget(
             self,
             action: #selector(textDidChange),
