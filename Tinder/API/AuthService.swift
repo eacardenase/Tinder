@@ -73,4 +73,24 @@ struct AuthService {
         }
     }
 
+    static func verifyLogin(completion: @escaping (NetworkingError?) -> Void) {
+        guard Auth.auth().currentUser != nil else {
+            completion(.serverError("Failed to get user, current user is nil."))
+
+            return
+        }
+
+        completion(nil)
+    }
+
+    static func logUserOut(completion: @escaping (Error?) -> Void) {
+        do {
+            try Auth.auth().signOut()
+
+            completion(nil)
+        } catch {
+            completion(error)
+        }
+    }
+
 }

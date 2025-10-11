@@ -30,8 +30,10 @@ class HomeController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        authenticateUser()
         setupViews()
         configureCards()
+        //        logout()
     }
 
 }
@@ -88,6 +90,8 @@ extension HomeController {
     }
 
     private func setupViews() {
+        view.backgroundColor = .white
+
         let stackView = UIStackView(arrangedSubviews: [
             topStack, deckView, bottomStack,
         ])
@@ -121,6 +125,47 @@ extension HomeController {
                 equalTo: view.safeAreaLayoutGuide.bottomAnchor
             ),
         ])
+    }
+
+    private func presentLoginController() {
+        DispatchQueue.main.async {
+            let loginController = LoginController()
+            let navController = UINavigationController(
+                rootViewController: loginController
+            )
+
+            navController.modalPresentationStyle = .fullScreen
+
+            self.present(navController, animated: true)
+        }
+    }
+
+}
+
+// MARK: - API
+
+extension HomeController {
+
+    func authenticateUser() {
+        AuthService.verifyLogin { error in
+            if case .serverError(let message) = error {
+                print("DEBUG: \(message)")
+
+                self.presentLoginController()
+            }
+        }
+    }
+
+    func logout() {
+        AuthService.logUserOut { error in
+            if let error {
+                print("DEBUG: \(error.localizedDescription)")
+
+                return
+            }
+
+            self.presentLoginController()
+        }
     }
 
 }
