@@ -167,7 +167,32 @@ extension LoginController {
     }
 
     @objc func loginButtonTapped(_ sender: UIButton) {
-        print(#function)
+        guard
+            let email = viewModel.email,
+            let password = viewModel.password
+        else {
+            return
+        }
+
+        AuthService.logUserIn(withEmail: email, password: password) { error in
+            if let error {
+                let alertController = UIAlertController(
+                    title: "Error",
+                    message: error.localizedDescription,
+                    preferredStyle: .alert
+                )
+
+                alertController.addAction(
+                    UIAlertAction(title: "OK", style: .default)
+                )
+
+                self.present(alertController, animated: true)
+
+                return
+            }
+
+            self.dismiss(animated: true)
+        }
     }
 
     @objc func showRegistrationButtonTapped(_ sender: UIButton) {

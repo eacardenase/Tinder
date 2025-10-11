@@ -232,7 +232,24 @@ extension RegistrationController {
         )
 
         AuthService.createUser(wih: credentials) { result in
-            print(result)
+            switch result {
+            case .success:
+                self.dismiss(animated: true)
+            case .failure(let error):
+                if case .serverError(let message) = error {
+                    let alertController = UIAlertController(
+                        title: "Error",
+                        message: message,
+                        preferredStyle: .alert
+                    )
+
+                    alertController.addAction(
+                        UIAlertAction(title: "OK", style: .default)
+                    )
+
+                    self.present(alertController, animated: true)
+                }
+            }
         }
     }
 

@@ -83,6 +83,25 @@ struct AuthService {
         completion(nil)
     }
 
+    static func logUserIn(
+        withEmail email: String,
+        password: String,
+        completion: @escaping (Error?) -> Void
+    ) {
+        Auth.auth().signIn(withEmail: email, password: password) {
+            result,
+            error in
+
+            if let error {
+                completion(error)
+
+                return
+            }
+
+            completion(nil)
+        }
+    }
+
     static func logUserOut(completion: @escaping (Error?) -> Void) {
         do {
             try Auth.auth().signOut()
