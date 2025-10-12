@@ -9,6 +9,7 @@ import FirebaseAuth
 import UIKit
 
 enum NetworkingError: Error {
+    case decodingError
     case serverError(String)
 }
 
@@ -23,9 +24,13 @@ struct AuthService {
 
     private init() {}
 
+    static var currentUser: FirebaseAuth.User? {
+        return Auth.auth().currentUser
+    }
+
     static func createUser(
         wih credentials: AuthCredentials,
-        completion: @escaping (Result<User?, NetworkingError>) -> Void
+        completion: @escaping (Result<User, NetworkingError>) -> Void
     ) {
         Auth.auth().createUser(
             withEmail: credentials.email,
@@ -55,17 +60,16 @@ struct AuthService {
                 case .failure(let error):
                     completion(.failure(error))
                 case .success(let url):
-                    let userData = [
-                        "uid": uid,
-                        "fullname": credentials.fullname,
-                        "email": credentials.email,
-                        "imageUrul": [url],
-                        "age": 18,
-                    ]
+                    let user = User(
+                        uid: uid,
+                        fullname: credentials.fullname,
+                        email: credentials.email,
+                        age: 18,
+                        imageUrls: [url]
+                    )
 
-                    UserService.storeUser(
-                        withId: uid,
-                        data: userData,
+                    UserService.store(
+                        user,
                         completion: completion
                     )
                 }

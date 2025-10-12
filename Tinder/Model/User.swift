@@ -7,10 +7,12 @@
 
 import UIKit
 
-struct User {
+struct User: Codable {
 
-    let name: String
-    let age: Int
-    let images: [UIImage]
+    let uid: String
+    var fullname: String
+    var email: String
+    var age: Int
+    var imageUrls: [String]
 
 }

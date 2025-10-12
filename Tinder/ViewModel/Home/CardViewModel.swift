@@ -15,7 +15,7 @@ struct CardViewModel {
 
     var userInfoText: NSAttributedString {
         let attributedText = NSMutableAttributedString(
-            string: user.name,
+            string: user.fullname,
             attributes: [
                 .font: UIFont.systemFont(ofSize: 32, weight: .heavy),
                 .foregroundColor: UIColor.white,
@@ -37,11 +37,11 @@ struct CardViewModel {
 
     private var imageIndex = 0 {
         didSet {
-            profileImage = user.images[imageIndex]
+//            profileImage = user.images[imageIndex]
         }
     }
 
-    lazy var profileImage = user.images.first
+//    lazy var profileImage = user.images.first
 
     // MARK: - Initializers
 
@@ -56,7 +56,7 @@ struct CardViewModel {
 extension CardViewModel {
 
     mutating func prepareNextPhoto() {
-        guard imageIndex < user.images.count - 1 else { return }
+//        guard imageIndex < user.images.count - 1 else { return }
 
         imageIndex += 1
     }

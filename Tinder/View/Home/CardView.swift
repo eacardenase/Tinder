@@ -23,7 +23,7 @@ class CardView: UIView {
 
         _imageView.translatesAutoresizingMaskIntoConstraints = false
         _imageView.contentMode = .scaleAspectFill
-        _imageView.image = viewModel.profileImage
+//        _imageView.image = viewModel.profileImage
 
         return _imageView
     }()
@@ -228,7 +228,7 @@ extension CardView {
             viewModel.preparePreviousPhoto()
         }
 
-        imageView.image = viewModel.profileImage
+//        imageView.image = viewModel.profileImage
     }
 
 }
