@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SettingsHeader: UIView {
+class SettingsHeader: UIStackView {
 
     // MARK: - Properties
 
@@ -27,9 +27,10 @@ class SettingsHeader: UIView {
         setupViews()
     }
 
-    required init?(coder: NSCoder) {
+    required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
 }
 
 // MARK: - Helpers
@@ -54,14 +55,11 @@ extension SettingsHeader {
     }
 
     private func setupViews() {
-        let primaryStackView = UIStackView()
-
-        primaryStackView.translatesAutoresizingMaskIntoConstraints = false
-        primaryStackView.axis = .horizontal
-        primaryStackView.spacing = 16
-        primaryStackView.distribution = .fillEqually
-        primaryStackView.isLayoutMarginsRelativeArrangement = true
-        primaryStackView.directionalLayoutMargins = NSDirectionalEdgeInsets(
+        axis = .horizontal
+        spacing = 16
+        distribution = .fillEqually
+        isLayoutMarginsRelativeArrangement = true
+        directionalLayoutMargins = NSDirectionalEdgeInsets(
             top: 16,
             leading: 16,
             bottom: 16,
@@ -76,19 +74,8 @@ extension SettingsHeader {
         secondaryStackView.spacing = 16
         secondaryStackView.distribution = .fillEqually
 
-        primaryStackView.addArrangedSubview(button1)
-        primaryStackView.addArrangedSubview(secondaryStackView)
-
-        addSubview(primaryStackView)
-
-        // primaryStackView
-        NSLayoutConstraint.activate([
-            primaryStackView.topAnchor.constraint(equalTo: topAnchor),
-            primaryStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            primaryStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            primaryStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
-        ])
-
+        addArrangedSubview(button1)
+        addArrangedSubview(secondaryStackView)
     }
 
 }
