@@ -13,6 +13,10 @@ class HomeController: UIViewController {
 
     private let topStack = HomeNavigationStackView()
 
+    var viewModels = [CardViewModel]() {
+        didSet { configureCards() }
+    }
+
     private let deckView: UIView = {
         let view = UIView()
 
@@ -32,7 +36,6 @@ class HomeController: UIViewController {
 
         authenticateUser()
         setupViews()
-        configureCards()
         // logout()
         fetchUsers()
     }
@@ -44,7 +47,25 @@ class HomeController: UIViewController {
 extension HomeController {
 
     private func configureCards() {
-        print(#function)
+        viewModels.forEach { viewModel in
+            let cardView = CardView(viewModel: viewModel)
+
+            deckView.addSubview(cardView)
+
+            // cardView
+            NSLayoutConstraint.activate([
+                cardView.topAnchor.constraint(equalTo: deckView.topAnchor),
+                cardView.leadingAnchor.constraint(
+                    equalTo: deckView.leadingAnchor
+                ),
+                cardView.trailingAnchor.constraint(
+                    equalTo: deckView.trailingAnchor
+                ),
+                cardView.bottomAnchor.constraint(
+                    equalTo: deckView.bottomAnchor
+                ),
+            ])
+        }
     }
 
     private func setupViews() {
@@ -143,7 +164,7 @@ extension HomeController {
         UserService.fetchUsers { result in
             switch result {
             case .success(let users):
-                print(users)
+                self.viewModels = users.map { CardViewModel(user: $0) }
             case .failure(let error):
                 print(error.localizedDescription)
             }

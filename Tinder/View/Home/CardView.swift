@@ -88,6 +88,7 @@ extension CardView {
 
     private func setupViews() {
         translatesAutoresizingMaskIntoConstraints = false
+        backgroundColor = .white
         clipsToBounds = true
         layer.cornerRadius = 8
 
