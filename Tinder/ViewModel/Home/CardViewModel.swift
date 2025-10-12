@@ -37,11 +37,13 @@ struct CardViewModel {
 
     private var imageIndex = 0 {
         didSet {
-//            profileImage = user.images[imageIndex]
+            imageUrl = URL(string: user.imageUrls[imageIndex])
         }
     }
 
-//    lazy var profileImage = user.images.first
+    lazy var imageUrl: URL? = {
+        return URL(string: user.imageUrls[imageIndex])
+    }()
 
     // MARK: - Initializers
 
@@ -56,7 +58,7 @@ struct CardViewModel {
 extension CardViewModel {
 
     mutating func prepareNextPhoto() {
-//        guard imageIndex < user.images.count - 1 else { return }
+        guard imageIndex < user.imageUrls.count - 1 else { return }
 
         imageIndex += 1
     }

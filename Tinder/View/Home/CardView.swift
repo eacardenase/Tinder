@@ -5,6 +5,7 @@
 //  Created by Edwin Cardenas on 10/6/25.
 //
 
+import SDWebImage
 import UIKit
 
 enum SwipeDirection: Int {
@@ -23,7 +24,7 @@ class CardView: UIView {
 
         _imageView.translatesAutoresizingMaskIntoConstraints = false
         _imageView.contentMode = .scaleAspectFill
-//        _imageView.image = viewModel.profileImage
+        _imageView.sd_setImage(with: viewModel.imageUrl)
 
         return _imageView
     }()
@@ -229,7 +230,7 @@ extension CardView {
             viewModel.preparePreviousPhoto()
         }
 
-//        imageView.image = viewModel.profileImage
+        imageView.sd_setImage(with: viewModel.imageUrl)
     }
 
 }
