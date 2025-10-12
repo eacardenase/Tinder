@@ -11,7 +11,13 @@ class HomeController: UIViewController {
 
     // MARK: - Properties
 
-    private let topStack = HomeNavigationStackView()
+    private lazy var topStack: HomeNavigationStackView = {
+        let stackView = HomeNavigationStackView()
+
+        stackView.delegate = self
+
+        return stackView
+    }()
 
     var viewModels = [CardViewModel]() {
         didSet { configureCards() }
@@ -169,6 +175,24 @@ extension HomeController {
                 print(error.localizedDescription)
             }
         }
+    }
+
+}
+
+// MARK: - HomeNavigationStackViewDelegate
+
+extension HomeController: HomeNavigationStackViewDelegate {
+
+    func showSettings() {
+        let controller = SettingsController()
+
+        controller.modalPresentationStyle = .fullScreen
+
+        present(controller, animated: true)
+    }
+
+    func showMessages() {
+        print(#function)
     }
 
 }
