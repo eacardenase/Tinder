@@ -35,15 +35,11 @@ struct CardViewModel {
         return attributedText
     }
 
-    private var imageIndex = 0 {
-        didSet {
-            imageUrl = URL(string: user.imageUrls[imageIndex])
-        }
-    }
+    private var imageIndex = 0
 
-    lazy var imageUrl: URL? = {
+    var imageUrl: URL? {
         return URL(string: user.imageUrls[imageIndex])
-    }()
+    }
 
     // MARK: - Initializers
 
