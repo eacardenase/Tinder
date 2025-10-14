@@ -7,13 +7,21 @@
 
 import UIKit
 
+protocol SettingsHeaderDelegate: AnyObject {
+
+    func settingsHeader(_ header: SettingsHeader, didSelectButtonAt index: Int)
+
+}
+
 class SettingsHeader: UIStackView {
 
     // MARK: - Properties
 
-    lazy var button1 = createButton()
-    lazy var button2 = createButton()
-    lazy var button3 = createButton()
+    weak var delegate: SettingsHeaderDelegate?
+
+    private lazy var button1 = createButton(withTag: 0)
+    private lazy var button2 = createButton(withTag: 1)
+    private lazy var button3 = createButton(withTag: 2)
 
     lazy var buttons = [
         button1, button2, button3,
@@ -37,14 +45,15 @@ class SettingsHeader: UIStackView {
 
 extension SettingsHeader {
 
-    private func createButton() -> UIButton {
+    private func createButton(withTag tag: Int) -> UIButton {
         let button = UIButton(type: .system)
 
         button.setTitle("Select Photo", for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
+        button.imageView?.contentMode = .scaleAspectFill
         button.layer.cornerRadius = 8
         button.clipsToBounds = true
         button.backgroundColor = .white
+        button.tag = tag
         button.addTarget(
             self,
             action: #selector(selectPhotoButtonTapped),
@@ -85,7 +94,7 @@ extension SettingsHeader {
 extension SettingsHeader {
 
     @objc func selectPhotoButtonTapped(_ sender: UIButton) {
-        print(#function)
+        delegate?.settingsHeader(self, didSelectButtonAt: sender.tag)
     }
 
 }
