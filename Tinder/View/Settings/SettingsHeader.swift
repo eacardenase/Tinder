@@ -71,7 +71,7 @@ extension SettingsHeader {
         directionalLayoutMargins = NSDirectionalEdgeInsets(
             top: 16,
             leading: 16,
-            bottom: 16,
+            bottom: 0,
             trailing: 16
         )
 

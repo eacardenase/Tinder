@@ -84,6 +84,7 @@ extension SettingsController {
         tableView.separatorStyle = .none
         tableView.tableHeaderView = headerView
         tableView.backgroundColor = .systemGroupedBackground
+        tableView.sectionHeaderTopPadding = 0
     }
 
 }
@@ -180,7 +181,7 @@ extension SettingsController {
         _ tableView: UITableView,
         heightForHeaderInSection section: Int
     ) -> CGFloat {
-        return 32
+        return 40
     }
 
     override func tableView(
