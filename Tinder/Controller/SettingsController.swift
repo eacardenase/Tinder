@@ -134,17 +134,23 @@ extension SettingsController {
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        return 2
+        return 1
     }
 
     override func tableView(
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: NSStringFromClass(SettingsCell.self),
-            for: indexPath
-        )
+        guard
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: NSStringFromClass(SettingsCell.self),
+                for: indexPath
+            ) as? SettingsCell
+        else {
+            fatalError("Could not dequeue SettingsCell.")
+        }
+
+        cell.selectionStyle = .none
 
         return cell
     }
