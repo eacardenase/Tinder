@@ -86,44 +86,31 @@ extension SettingsCell {
         sliderStack.axis = .vertical
         sliderStack.spacing = 16
 
-        contentView.addSubview(inputField)
-        contentView.addSubview(sliderStack)
-
-        // inputField
-        NSLayoutConstraint.activate([
-            inputField.topAnchor.constraint(
-                equalTo: contentView.topAnchor,
-                constant: 16,
-            ),
-            inputField.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor,
-                constant: 24
-            ),
-            inputField.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor,
-                constant: -24
-            ),
-            inputField.bottomAnchor.constraint(
-                equalTo: contentView.bottomAnchor,
-                constant: -16
-            ),
+        let primaryStackView = UIStackView(arrangedSubviews: [
+            inputField,
+            sliderStack,
         ])
+
+        primaryStackView.translatesAutoresizingMaskIntoConstraints = false
+        primaryStackView.axis = .vertical
+
+        contentView.addSubview(primaryStackView)
 
         // sliderStack
         NSLayoutConstraint.activate([
-            sliderStack.topAnchor.constraint(
+            primaryStackView.topAnchor.constraint(
                 equalTo: contentView.topAnchor,
                 constant: 16
             ),
-            sliderStack.leadingAnchor.constraint(
+            primaryStackView.leadingAnchor.constraint(
                 equalTo: contentView.leadingAnchor,
                 constant: 24
             ),
-            sliderStack.trailingAnchor.constraint(
+            primaryStackView.trailingAnchor.constraint(
                 equalTo: contentView.trailingAnchor,
                 constant: -24
             ),
-            sliderStack.bottomAnchor.constraint(
+            primaryStackView.bottomAnchor.constraint(
                 equalTo: contentView.bottomAnchor,
                 constant: -16
             ),
