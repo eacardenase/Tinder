@@ -35,6 +35,11 @@ class SettingsController: UITableViewController {
         super.viewDidLoad()
 
         setupViews()
+
+        tableView.register(
+            SettingsCell.self,
+            forCellReuseIdentifier: NSStringFromClass(SettingsCell.self)
+        )
     }
 
 }
@@ -114,5 +119,58 @@ extension SettingsController: UIImagePickerControllerDelegate,
 
         dismiss(animated: true)
     }
+
+}
+
+// MARK: - UITableViewDataSource
+
+extension SettingsController {
+
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return SettingsSections.allCases.count
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
+        return 2
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: NSStringFromClass(SettingsCell.self),
+            for: indexPath
+        )
+
+        return cell
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
+        heightForHeaderInSection section: Int
+    ) -> CGFloat {
+        return 32
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
+        titleForHeaderInSection section: Int
+    ) -> String? {
+        guard let section = SettingsSections(rawValue: section) else {
+            return nil
+        }
+
+        return section.description
+    }
+
+}
+
+// MARK: - UITableViewDelegate
+
+extension SettingsController {
 
 }
