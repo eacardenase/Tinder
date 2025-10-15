@@ -11,6 +11,8 @@ class HomeController: UIViewController {
 
     // MARK: - Properties
 
+    private var user: User?
+
     private lazy var topStack: HomeNavigationStackView = {
         let stackView = HomeNavigationStackView()
 
@@ -43,6 +45,7 @@ class HomeController: UIViewController {
         authenticateUser()
         setupViews()
         // logout()
+        fetchUser()
         fetchUsers()
     }
 
@@ -159,7 +162,7 @@ extension HomeController {
         UserService.fetchUser(withId: userId) { result in
             switch result {
             case .success(let user):
-                print(user.fullname)
+                self.user = user
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -184,7 +187,9 @@ extension HomeController {
 extension HomeController: HomeNavigationStackViewDelegate {
 
     func showSettings() {
-        let controller = SettingsController()
+        guard let user else { return }
+
+        let controller = SettingsController(user: user)
         let navController = UINavigationController(
             rootViewController: controller
         )

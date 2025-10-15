@@ -11,6 +11,8 @@ class SettingsController: UITableViewController {
 
     // MARK: Properties
 
+    private let user: User
+
     private lazy var headerView: SettingsHeader = {
         let header = SettingsHeader()
 
@@ -40,6 +42,18 @@ class SettingsController: UITableViewController {
             SettingsCell.self,
             forCellReuseIdentifier: NSStringFromClass(SettingsCell.self)
         )
+    }
+
+    // MARK: - Initializers
+
+    init(user: User) {
+        self.user = user
+
+        super.init(style: .plain)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
 }
@@ -150,7 +164,14 @@ extension SettingsController {
             fatalError("Could not dequeue SettingsCell.")
         }
 
+        guard let section = SettingsSections(rawValue: indexPath.section) else {
+            fatalError("Could not create SettingsSection from raw value.")
+        }
+
+        let viewModel = SettingsViewModel(user: user, section: section)
+
         cell.selectionStyle = .none
+        cell.viewModel = viewModel
 
         return cell
     }

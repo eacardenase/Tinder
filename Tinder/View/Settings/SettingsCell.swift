@@ -11,6 +11,10 @@ class SettingsCell: UITableViewCell {
 
     // MARK: - Properties
 
+    var viewModel: SettingsViewModel? {
+        didSet { configure() }
+    }
+
     lazy var inputField: UITextField = {
         let textField = UITextField()
         let spacer = UIView()
@@ -23,11 +27,26 @@ class SettingsCell: UITableViewCell {
         return textField
     }()
 
-    let minAgeLabel = UILabel()
-    let maxAgeLabel = UILabel()
+    private let minAgeLabel: UILabel = {
+        let label = UILabel()
+
+        label.text = "Min: 18"
+
+        return label
+    }()
+
+    private let maxAgeLabel: UILabel = {
+        let label = UILabel()
+
+        label.text = "Max: 60"
+
+        return label
+    }()
 
     lazy var minAgeSlider = makeAgeRangeSlider()
     lazy var maxAgeSlider = makeAgeRangeSlider()
+
+    private let sliderStack = UIStackView()
 
     // MARK: - Initializers
 
@@ -48,7 +67,27 @@ class SettingsCell: UITableViewCell {
 extension SettingsCell {
 
     private func setupViews() {
+        let minStack = UIStackView(arrangedSubviews: [
+            minAgeLabel, minAgeSlider,
+        ])
+
+        minStack.spacing = 24
+
+        let maxStack = UIStackView(arrangedSubviews: [
+            maxAgeLabel, maxAgeSlider,
+        ])
+
+        maxStack.spacing = 24
+
+        sliderStack.addArrangedSubview(minStack)
+        sliderStack.addArrangedSubview(maxStack)
+
+        sliderStack.translatesAutoresizingMaskIntoConstraints = false
+        sliderStack.axis = .vertical
+        sliderStack.spacing = 16
+
         contentView.addSubview(inputField)
+        contentView.addSubview(sliderStack)
 
         // inputField
         NSLayoutConstraint.activate([
@@ -69,6 +108,26 @@ extension SettingsCell {
                 constant: -16
             ),
         ])
+
+        // sliderStack
+        NSLayoutConstraint.activate([
+            sliderStack.topAnchor.constraint(
+                equalTo: contentView.topAnchor,
+                constant: 16
+            ),
+            sliderStack.leadingAnchor.constraint(
+                equalTo: contentView.leadingAnchor,
+                constant: 24
+            ),
+            sliderStack.trailingAnchor.constraint(
+                equalTo: contentView.trailingAnchor,
+                constant: -24
+            ),
+            sliderStack.bottomAnchor.constraint(
+                equalTo: contentView.bottomAnchor,
+                constant: -16
+            ),
+        ])
     }
 
     private func makeAgeRangeSlider() -> UISlider {
@@ -83,6 +142,13 @@ extension SettingsCell {
         )
 
         return slider
+    }
+
+    private func configure() {
+        guard let viewModel else { return }
+
+        inputField.isHidden = viewModel.shouldHideInputField
+        sliderStack.isHidden = viewModel.shouldHideSlider
     }
 
 }
