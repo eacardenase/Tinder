@@ -38,7 +38,7 @@ struct SettingsViewModel {
         case .profession: return user.profession
         case .age: return "\(user.age)"
         case .bio: return user.bio
-        case .ageRange: return "NA"
+        case .ageRange: return nil
         }
     }
 
@@ -52,6 +52,22 @@ struct SettingsViewModel {
 
     var shouldHideSlider: Bool {
         return !shouldHideInputField
+    }
+
+    var minAgeSliderValue: Float {
+        return Float(user.minSeekingAge)
+    }
+
+    var maxAgeSliderValue: Float {
+        return Float(user.maxSeekingAge)
+    }
+
+    func minAgeLabelText(for value: Float) -> String {
+        return "Min:  \(Int(value))"
+    }
+
+    func maxAgeLabelText(for value: Float) -> String {
+        return "Max: \(Int(value))"
     }
 
 }

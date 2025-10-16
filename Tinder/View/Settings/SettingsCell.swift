@@ -14,6 +14,11 @@ protocol SettingsCellDelegate: AnyObject {
         forSection section: SettingsSections
     )
 
+    func settingsCell(
+        _ cell: SettingsCell,
+        wantsToUpdateAgeRangeFor sender: UISlider
+    )
+
 }
 
 class SettingsCell: UITableViewCell {
@@ -38,21 +43,8 @@ class SettingsCell: UITableViewCell {
         return textField
     }()
 
-    private let minAgeLabel: UILabel = {
-        let label = UILabel()
-
-        label.text = "Min: 18"
-
-        return label
-    }()
-
-    private let maxAgeLabel: UILabel = {
-        let label = UILabel()
-
-        label.text = "Max: 60"
-
-        return label
-    }()
+    private let minAgeLabel = UILabel()
+    private let maxAgeLabel = UILabel()
 
     lazy var minAgeSlider = makeAgeRangeSlider()
     lazy var maxAgeSlider = makeAgeRangeSlider()
@@ -148,6 +140,16 @@ extension SettingsCell {
         inputField.placeholder = viewModel.placeholderText
         inputField.text = viewModel.value
 
+        minAgeSlider.value = viewModel.minAgeSliderValue
+        maxAgeSlider.value = viewModel.maxAgeSliderValue
+
+        minAgeLabel.text = viewModel.minAgeLabelText(
+            for: viewModel.minAgeSliderValue
+        )
+        maxAgeLabel.text = viewModel.maxAgeLabelText(
+            for: viewModel.maxAgeSliderValue
+        )
+
         inputField.isHidden = viewModel.shouldHideInputField
         sliderStack.isHidden = viewModel.shouldHideSlider
     }
@@ -159,7 +161,13 @@ extension SettingsCell {
 extension SettingsCell {
 
     @objc func ageRangeChanged(_ sender: UISlider) {
+        if sender === minAgeSlider {
+            minAgeLabel.text = viewModel?.minAgeLabelText(for: sender.value)
+        } else {
+            maxAgeLabel.text = viewModel?.maxAgeLabelText(for: sender.value)
+        }
 
+        delegate?.settingsCell(self, wantsToUpdateAgeRangeFor: sender)
     }
 
 }
