@@ -7,9 +7,20 @@
 
 import UIKit
 
+protocol SettingsCellDelegate: AnyObject {
+
+    func inputFieldDidEndEditing(
+        with value: String,
+        forSection section: SettingsSections
+    )
+
+}
+
 class SettingsCell: UITableViewCell {
 
     // MARK: - Properties
+
+    weak var delegate: SettingsCellDelegate?
 
     var viewModel: SettingsViewModel? {
         didSet { configure() }
@@ -22,6 +33,7 @@ class SettingsCell: UITableViewCell {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.borderStyle = .none
         textField.font = .systemFont(ofSize: 16)
+        textField.delegate = self
 
         return textField
     }()
@@ -148,6 +160,24 @@ extension SettingsCell {
 
     @objc func ageRangeChanged(_ sender: UISlider) {
 
+    }
+
+}
+
+// MARK: - UITextFieldDelegate
+
+extension SettingsCell: UITextFieldDelegate {
+
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        guard
+            let value = textField.text,
+            let viewModel
+        else { return }
+
+        delegate?.inputFieldDidEndEditing(
+            with: value,
+            forSection: viewModel.section
+        )
     }
 
 }

@@ -179,6 +179,8 @@ extension HomeController: HomeNavigationStackViewDelegate {
         guard let user else { return }
 
         let controller = SettingsController(user: user)
+        controller.delegate = self
+
         let navController = UINavigationController(
             rootViewController: controller
         )
@@ -190,6 +192,21 @@ extension HomeController: HomeNavigationStackViewDelegate {
 
     func showMessages() {
         print(#function)
+    }
+
+}
+
+// MARK: - SettingsControllerDelegate
+
+extension HomeController: SettingsControllerDelegate {
+
+    func settingsController(
+        _ controller: SettingsController,
+        wantsToUpdate user: User
+    ) {
+        controller.dismiss(animated: true)
+
+        self.user = user
     }
 
 }

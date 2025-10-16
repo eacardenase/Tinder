@@ -7,11 +7,22 @@
 
 import UIKit
 
+protocol SettingsControllerDelegate: AnyObject {
+
+    func settingsController(
+        _ controller: SettingsController,
+        wantsToUpdate user: User
+    )
+
+}
+
 class SettingsController: UITableViewController {
 
     // MARK: Properties
 
-    private let user: User
+    private var user: User
+
+    weak var delegate: SettingsControllerDelegate?
 
     private lazy var headerView: SettingsHeader = {
         let header = SettingsHeader()
@@ -98,7 +109,9 @@ extension SettingsController {
     }
 
     @objc func doneButtonTapped(_ sender: UIBarButtonItem) {
-        print(#function)
+        view.endEditing(true)
+
+        delegate?.settingsController(self, wantsToUpdate: user)
     }
 
 }
@@ -173,6 +186,7 @@ extension SettingsController {
 
         cell.selectionStyle = .none
         cell.viewModel = viewModel
+        cell.delegate = self
 
         return cell
     }
@@ -200,5 +214,29 @@ extension SettingsController {
 // MARK: - UITableViewDelegate
 
 extension SettingsController {
+
+}
+
+// MARK: - SettingsCellDelegate
+
+extension SettingsController: SettingsCellDelegate {
+
+    func inputFieldDidEndEditing(
+        with value: String,
+        forSection section: SettingsSections
+    ) {
+        switch section {
+        case .name:
+            user.fullname = value
+        case .profession:
+            user.profession = value
+        case .age:
+            user.age = Int(value) ?? user.age
+        case .bio:
+            user.bio = value
+        case .ageRange:
+            break
+        }
+    }
 
 }
