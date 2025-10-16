@@ -204,9 +204,21 @@ extension HomeController: SettingsControllerDelegate {
         _ controller: SettingsController,
         wantsToUpdate user: User
     ) {
-        controller.dismiss(animated: true)
+        self.showLoader()
 
-        self.user = user
+        controller.dismiss(animated: true) {
+            self.user = user
+
+            UserService.store(user) { result in
+                self.showLoader(false)
+
+                if case .failure(let error) = result {
+                    print(
+                        "DEBUG: Failed to update user with error: \(error.localizedDescription)"
+                    )
+                }
+            }
+        }
     }
 
 }

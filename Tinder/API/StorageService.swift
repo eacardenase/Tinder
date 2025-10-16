@@ -14,7 +14,7 @@ struct StorageService {
 
     static func upload(
         _ image: UIImage,
-        for userId: String,
+        forUserId userId: String,
         completion: @escaping (Result<String, NetworkingError>) -> Void
     ) {
         guard let imageData = image.jpegData(compressionQuality: 0.5) else {

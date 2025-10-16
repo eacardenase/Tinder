@@ -53,7 +53,7 @@ struct AuthService {
                 return
             }
 
-            StorageService.upload(credentials.profileImage, for: uid) {
+            StorageService.upload(credentials.profileImage, forUserId: uid) {
                 result in
 
                 switch result {

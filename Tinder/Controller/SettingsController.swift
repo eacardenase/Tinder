@@ -142,12 +142,15 @@ extension SettingsController: UIImagePickerControllerDelegate,
         didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey:
             Any]
     ) {
-        let image = info[.originalImage] as? UIImage
+        guard let image = info[.originalImage] as? UIImage else { return }
+
         let button = headerView.buttons[buttonIndex]
 
-        button.setImage(image?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
 
-        dismiss(animated: true)
+        dismiss(animated: true) {
+            self.uploadImage(image)
+        }
     }
 
 }
@@ -250,6 +253,29 @@ extension SettingsController: SettingsCellDelegate {
             user.minSeekingAge = Int(sender.value)
         } else {
             user.maxSeekingAge = Int(sender.value)
+        }
+    }
+
+}
+
+// MARK: - API
+
+extension SettingsController {
+
+    func uploadImage(_ image: UIImage) {
+        guard let currentUserId = AuthService.currentUser?.uid else { return }
+
+        showLoader()
+
+        StorageService.upload(image, forUserId: currentUserId) { result in
+            self.showLoader(false)
+
+            switch result {
+            case .success(let imageUrl):
+                self.user.imageUrls.append(imageUrl)
+            case .failure(let error):
+                print(error)
+            }
         }
     }
 
