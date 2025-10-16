@@ -5,6 +5,7 @@
 //  Created by Edwin Cardenas on 10/12/25.
 //
 
+import SDWebImage
 import UIKit
 
 protocol SettingsHeaderDelegate: AnyObject {
@@ -16,6 +17,8 @@ protocol SettingsHeaderDelegate: AnyObject {
 class SettingsHeader: UIStackView {
 
     // MARK: - Properties
+
+    var viewModel: SettingsHeaderViewModel
 
     weak var delegate: SettingsHeaderDelegate?
 
@@ -29,10 +32,13 @@ class SettingsHeader: UIStackView {
 
     // MARK: - Initializers
 
-    override init(frame: CGRect) {
+    init(viewModel: SettingsHeaderViewModel) {
+        self.viewModel = viewModel
+
         super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 300))
 
         setupViews()
+        loadUserPhotos()
     }
 
     required init(coder: NSCoder) {
@@ -47,8 +53,14 @@ extension SettingsHeader {
 
     private func createButton(withTag tag: Int) -> UIButton {
         let button = UIButton(type: .system)
+        let imageConf = UIImage.SymbolConfiguration(pointSize: 40)
+        let image = UIImage(
+            systemName: "photo.badge.plus",
+            withConfiguration: imageConf
+        )?.withRenderingMode(.alwaysOriginal)
 
-        button.setTitle("Select Photo", for: .normal)
+        button.setImage(image, for: .normal)
+        button.tintColor = .lightGray
         button.imageView?.contentMode = .scaleAspectFill
         button.layer.cornerRadius = 8
         button.clipsToBounds = true
@@ -85,6 +97,21 @@ extension SettingsHeader {
 
         addArrangedSubview(button1)
         addArrangedSubview(secondaryStackView)
+    }
+
+    private func loadUserPhotos() {
+        for (index, imageURL) in viewModel.imageUrls.enumerated() {
+
+            SDWebImageManager.shared.loadImage(with: imageURL, progress: nil) {
+                (image, _, _, _, _, _) in
+                let button = self.buttons[index]
+
+                button.setImage(
+                    image?.withRenderingMode(.alwaysOriginal),
+                    for: .normal
+                )
+            }
+        }
     }
 
 }
