@@ -9,8 +9,9 @@ import UIKit
 
 protocol SettingsCellDelegate: AnyObject {
 
-    func inputFieldDidEndEditing(
-        with value: String,
+    func settingsCell(
+        _ cell: SettingsCell,
+        wantsToUpdateInputWith value: String,
         forSection section: SettingsSections
     )
 
@@ -182,8 +183,9 @@ extension SettingsCell: UITextFieldDelegate {
             let viewModel
         else { return }
 
-        delegate?.inputFieldDidEndEditing(
-            with: value,
+        delegate?.settingsCell(
+            self,
+            wantsToUpdateInputWith: value,
             forSection: viewModel.section
         )
     }

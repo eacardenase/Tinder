@@ -223,17 +223,7 @@ extension SettingsController: SettingsCellDelegate {
 
     func settingsCell(
         _ cell: SettingsCell,
-        wantsToUpdateAgeRangeFor sender: UISlider
-    ) {
-        if sender === cell.minAgeSlider {
-            user.minSeekingAge = Int(sender.value)
-        } else {
-            user.maxSeekingAge = Int(sender.value)
-        }
-    }
-
-    func inputFieldDidEndEditing(
-        with value: String,
+        wantsToUpdateInputWith value: String,
         forSection section: SettingsSections
     ) {
         switch section {
@@ -247,6 +237,17 @@ extension SettingsController: SettingsCellDelegate {
             user.bio = value
         case .ageRange:
             break
+        }
+    }
+
+    func settingsCell(
+        _ cell: SettingsCell,
+        wantsToUpdateAgeRangeFor sender: UISlider
+    ) {
+        if sender === cell.minAgeSlider {
+            user.minSeekingAge = Int(sender.value)
+        } else {
+            user.maxSeekingAge = Int(sender.value)
         }
     }
 
