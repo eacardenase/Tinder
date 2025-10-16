@@ -45,7 +45,6 @@ class HomeController: UIViewController {
         authenticateUser()
         setupViews()
         // logout()
-        fetchUser()
         fetchUsers()
     }
 
@@ -135,9 +134,12 @@ extension HomeController {
 extension HomeController {
 
     func authenticateUser() {
-        AuthService.verifyLogin { error in
-            if case .serverError(let message) = error {
-                print("DEBUG: \(message)")
+        AuthService.verifyLogin { result in
+            switch result {
+            case .success(let user):
+                self.user = user
+            case .failure(let error):
+                print("DEBUG: \(error.localizedDescription)")
 
                 self.presentLoginController()
             }
@@ -153,21 +155,6 @@ extension HomeController {
             }
 
             self.presentLoginController()
-        }
-    }
-
-    func fetchUser() {
-        guard let userId = AuthService.currentUser?.uid else { return }
-
-        UserService.fetchUser(withId: userId) { result in
-            switch result {
-            case .success(let user):
-                self.user = user
-            case .failure(let error):
-                print(
-                    "DEBUG: Failed to fetch user with error: \(error.localizedDescription)"
-                )
-            }
         }
     }
 
