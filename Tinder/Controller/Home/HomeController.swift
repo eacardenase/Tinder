@@ -164,7 +164,9 @@ extension HomeController {
             case .success(let user):
                 self.user = user
             case .failure(let error):
-                print(error.localizedDescription)
+                print(
+                    "DEBUG: Failed to fetch user with error: \(error.localizedDescription)"
+                )
             }
         }
     }

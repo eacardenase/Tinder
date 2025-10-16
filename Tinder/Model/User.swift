@@ -13,6 +13,10 @@ struct User: Codable {
     var fullname: String
     var email: String
     var age: Int
+    var bio: String?
+    var profession: String?
+    var minSeekingAge: Int = 18
+    var maxSeekingAge: Int = 40
     var imageUrls: [String]
 
 }

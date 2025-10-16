@@ -22,7 +22,6 @@ class SettingsCell: UITableViewCell {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.borderStyle = .none
         textField.font = .systemFont(ofSize: 16)
-        textField.placeholder = "Enter value here..."
 
         return textField
     }()
@@ -133,6 +132,9 @@ extension SettingsCell {
 
     private func configure() {
         guard let viewModel else { return }
+
+        inputField.placeholder = viewModel.placeholderText
+        inputField.text = viewModel.value
 
         inputField.isHidden = viewModel.shouldHideInputField
         sliderStack.isHidden = viewModel.shouldHideSlider

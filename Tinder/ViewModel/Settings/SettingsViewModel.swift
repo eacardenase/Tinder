@@ -29,8 +29,22 @@ struct SettingsViewModel {
 
     // MARK: - Properties
 
-    private let user: User
-    private let section: SettingsSections
+    let user: User
+    let section: SettingsSections
+
+    var value: String? {
+        switch section {
+        case .name: return user.fullname
+        case .profession: return user.profession
+        case .age: return "\(user.age)"
+        case .bio: return user.bio
+        case .ageRange: return "NA"
+        }
+    }
+
+    var placeholderText: String {
+        return "Enter \(section.description.lowercased())..."
+    }
 
     var shouldHideInputField: Bool {
         return section == .ageRange
@@ -38,13 +52,6 @@ struct SettingsViewModel {
 
     var shouldHideSlider: Bool {
         return !shouldHideInputField
-    }
-
-    // MARK: - Initializers
-
-    init(user: User, section: SettingsSections) {
-        self.user = user
-        self.section = section
     }
 
 }
