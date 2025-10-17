@@ -44,7 +44,6 @@ class HomeController: UIViewController {
 
         authenticateUser()
         setupViews()
-        // logout()
         fetchUsers()
     }
 
@@ -147,11 +146,15 @@ extension HomeController {
     }
 
     func logout() {
-        AuthService.logUserOut { error in
-            if let error {
-                print("DEBUG: \(error.localizedDescription)")
+        showLoader()
 
-                return
+        AuthService.logUserOut { error in
+            self.showLoader(false)
+
+            if let error {
+                print(
+                    "DEBUG: Failed to log out with error: \(error.localizedDescription)"
+                )
             }
 
             self.presentLoginController()
@@ -219,6 +222,10 @@ extension HomeController: SettingsControllerDelegate {
                 }
             }
         }
+    }
+
+    func handleLogout() {
+        logout()
     }
 
 }

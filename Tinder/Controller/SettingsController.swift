@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol SettingsControllerDelegate: AnyObject {
+protocol SettingsControllerDelegate: SettingsFooterDelegate {
 
     func settingsController(
         _ controller: SettingsController,
@@ -32,6 +32,14 @@ class SettingsController: UITableViewController {
         header.delegate = self
 
         return header
+    }()
+
+    private lazy var footerView: SettingsFooter = {
+        let footer = SettingsFooter()
+
+        footer.delegate = self
+
+        return footer
     }()
 
     private var buttonIndex = 0
@@ -96,6 +104,7 @@ extension SettingsController {
 
         tableView.separatorStyle = .none
         tableView.tableHeaderView = headerView
+        tableView.tableFooterView = footerView
         tableView.backgroundColor = .systemGroupedBackground
         tableView.sectionHeaderTopPadding = 0
     }
@@ -277,6 +286,35 @@ extension SettingsController {
                 print(error)
             }
         }
+    }
+
+}
+
+// MARK: - SettingsFooterDelegate
+
+extension SettingsController: SettingsFooterDelegate {
+
+    func handleLogout() {
+        let alertController = UIAlertController(
+            title: nil,
+            message: "Are you sure you want to log out?",
+            preferredStyle: .alert
+        )
+
+        let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
+        { _ in
+            self.dismiss(animated: true) {
+                self.delegate?.handleLogout()
+            }
+        }
+
+        alertController.addAction(logoutAction)
+        alertController.addAction(
+            UIAlertAction(title: "Cancel", style: .cancel)
+        )
+
+        present(alertController, animated: true)
+
     }
 
 }
