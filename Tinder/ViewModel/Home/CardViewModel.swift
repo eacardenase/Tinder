@@ -11,7 +11,7 @@ struct CardViewModel {
 
     // MARK: - Properties
 
-    private let user: User
+    let user: User
 
     var userInfoText: NSAttributedString {
         let attributedText = NSMutableAttributedString(
@@ -43,12 +43,6 @@ struct CardViewModel {
 
     var imageUrls: [String] {
         return user.imageUrls
-    }
-
-    // MARK: - Initializers
-
-    init(user: User) {
-        self.user = user
     }
 
 }

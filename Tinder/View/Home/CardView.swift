@@ -13,9 +13,17 @@ enum SwipeDirection: Int {
     case right = 1
 }
 
+protocol CardViewDelegate: AnyObject {
+
+    func cardView(_ view: CardView, wantsToShowProfileFor user: User)
+
+}
+
 class CardView: UIView {
 
     // MARK: - Properties
+
+    weak var delegate: CardViewDelegate?
 
     private var viewModel: CardViewModel
 
@@ -56,6 +64,11 @@ class CardView: UIView {
 
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(image, for: .normal)
+        button.addTarget(
+            self,
+            action: #selector(infoButtonTapped),
+            for: .touchUpInside
+        )
 
         return button
     }()
@@ -285,6 +298,10 @@ extension CardView {
                 index == viewModel.imageIndex
                 ? .white : .black.withAlphaComponent(0.1)
         }
+    }
+
+    @objc func infoButtonTapped(_ sender: UIButton) {
+        delegate?.cardView(self, wantsToShowProfileFor: viewModel.user)
     }
 
 }
