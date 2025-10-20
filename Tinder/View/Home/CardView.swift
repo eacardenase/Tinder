@@ -73,15 +73,9 @@ class CardView: UIView {
         return button
     }()
 
-    private let barStackView: UIStackView = {
-        let stackView = UIStackView()
-
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.spacing = 8
-        stackView.distribution = .fillEqually
-
-        return stackView
-    }()
+    private lazy var barStackView = SegmentedBarView(
+        numberOfSegments: viewModel.imageUrls.count
+    )
 
     // MARK: - Initializers
 
@@ -91,7 +85,6 @@ class CardView: UIView {
         super.init(frame: .zero)
 
         setupViews()
-        configureBarStackView()
         configureGestureRecognizers()
     }
 
@@ -118,6 +111,7 @@ extension CardView {
         layer.cornerRadius = 8
 
         addSubview(imageView)
+        addSubview(barStackView)
 
         layer.addSublayer(gradientLayer)
 
@@ -130,6 +124,22 @@ extension CardView {
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
+
+        // barStackView
+        NSLayoutConstraint.activate([
+            barStackView.topAnchor.constraint(
+                equalTo: topAnchor,
+                constant: 8
+            ),
+            barStackView.leadingAnchor.constraint(
+                equalTo: leadingAnchor,
+                constant: 8
+            ),
+            barStackView.trailingAnchor.constraint(
+                equalTo: trailingAnchor,
+                constant: -8
+            ),
         ])
 
         // infoLabel
@@ -225,43 +235,6 @@ extension CardView {
         }
     }
 
-    func configureBarStackView() {
-        viewModel.imageUrls.forEach { _ in
-            let barView = UIView()
-
-            barView.backgroundColor = .black.withAlphaComponent(0.1)
-
-            let barViewHeightAnchor = barView.heightAnchor.constraint(
-                equalToConstant: 4
-            )
-
-            barViewHeightAnchor.isActive = true
-            barView.layer.cornerRadius = barViewHeightAnchor.constant / 2
-
-            barStackView.addArrangedSubview(barView)
-        }
-
-        barStackView.arrangedSubviews.first?.backgroundColor = .white
-
-        addSubview(barStackView)
-
-        // barStackView
-        NSLayoutConstraint.activate([
-            barStackView.topAnchor.constraint(
-                equalTo: topAnchor,
-                constant: 8
-            ),
-            barStackView.leadingAnchor.constraint(
-                equalTo: leadingAnchor,
-                constant: 8
-            ),
-            barStackView.trailingAnchor.constraint(
-                equalTo: trailingAnchor,
-                constant: -8
-            ),
-        ])
-    }
-
 }
 
 // MARK: - Actions
@@ -293,11 +266,7 @@ extension CardView {
 
         imageView.sd_setImage(with: viewModel.imageUrl)
 
-        barStackView.arrangedSubviews.enumerated().forEach { index, view in
-            view.backgroundColor =
-                index == viewModel.imageIndex
-                ? .white : .black.withAlphaComponent(0.1)
-        }
+        barStackView.highlightSegment(at: viewModel.imageIndex)
     }
 
     @objc func infoButtonTapped(_ sender: UIButton) {

@@ -60,6 +60,10 @@ class ProfileController: UIViewController {
         return collection
     }()
 
+    private lazy var barStackView = SegmentedBarView(
+        numberOfSegments: viewModel.imageUrls.count
+    )
+
     private lazy var dismissButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(resource: .dismissDownArrow).withRenderingMode(
@@ -137,6 +141,7 @@ class ProfileController: UIViewController {
 extension ProfileController {
 
     private func setupViews() {
+        navigationController?.navigationBar.isHidden = true
         view.backgroundColor = .white
 
         let infoStackView = UIStackView(arrangedSubviews: [
@@ -148,6 +153,7 @@ extension ProfileController {
         infoStackView.spacing = 8
 
         view.addSubview(collectionView)
+        view.addSubview(barStackView)
         view.addSubview(dismissButton)
         view.addSubview(infoStackView)
         view.addSubview(controlsStackView)
@@ -155,7 +161,8 @@ extension ProfileController {
         // collectionView
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.topAnchor
+                equalTo: view.topAnchor,
+                constant: -48
             ),
             collectionView.leadingAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.leadingAnchor
@@ -166,6 +173,22 @@ extension ProfileController {
             collectionView.heightAnchor.constraint(
                 equalTo: collectionView.widthAnchor,
                 constant: 50
+            ),
+        ])
+
+        // barStackView
+        NSLayoutConstraint.activate([
+            barStackView.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor,
+                constant: 8
+            ),
+            barStackView.leadingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                constant: 8
+            ),
+            barStackView.trailingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                constant: -8
             ),
         ])
 
@@ -248,6 +271,14 @@ extension ProfileController: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegate
 
 extension ProfileController: UICollectionViewDelegate {
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        willDisplay cell: UICollectionViewCell,
+        forItemAt indexPath: IndexPath
+    ) {
+        barStackView.highlightSegment(at: indexPath.item)
+    }
 
 }
 
