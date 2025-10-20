@@ -11,7 +11,7 @@ class ProfileController: UIViewController {
 
     // MARK: - Properties
 
-    let user: User
+    let viewModel: ProfileViewModel
 
     private let collectionViewLayout: UICollectionViewLayout = {
         let itemSize = NSCollectionLayoutSize(
@@ -77,32 +77,31 @@ class ProfileController: UIViewController {
         return button
     }()
 
-    private let infoLabel: UILabel = {
+    private lazy var infoLabel: UILabel = {
         let label = UILabel()
 
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.text = "Megan Fox - 20"
-        label.font = .preferredFont(forTextStyle: .title2)
+        label.attributedText = viewModel.userDetailsAttributedString
 
         return label
     }()
 
-    private let professionLabel: UILabel = {
+    private lazy var professionLabel: UILabel = {
         let label = UILabel()
 
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Actress"
+        label.text = viewModel.profesion
         label.font = .preferredFont(forTextStyle: .body)
 
         return label
     }()
 
-    private let bioLabel: UILabel = {
+    private lazy var bioLabel: UILabel = {
         let label = UILabel()
 
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "I was in Transformers"
+        label.text = viewModel.bio
         label.numberOfLines = 0
         label.font = .preferredFont(forTextStyle: .body)
 
@@ -113,8 +112,8 @@ class ProfileController: UIViewController {
 
     // MARK: - Initializers
 
-    init(user: User) {
-        self.user = user
+    init(viewModel: ProfileViewModel) {
+        self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -223,7 +222,7 @@ extension ProfileController: UICollectionViewDataSource {
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        return user.imageUrls.count
+        return viewModel.imageCount
     }
 
     func collectionView(
@@ -239,7 +238,7 @@ extension ProfileController: UICollectionViewDataSource {
             fatalError("Could not instantiate ProfileCell")
         }
 
-        cell.imageUrl = user.imageUrls[indexPath.item]
+        cell.imageUrl = viewModel.imageUrls[indexPath.item]
 
         return cell
     }

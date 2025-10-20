@@ -12,7 +12,7 @@ class ProfileCell: UICollectionViewCell {
 
     // MARK: - Properties
 
-    var imageUrl: String? {
+    var imageUrl: URL? {
         didSet { configure() }
     }
 
@@ -64,12 +64,9 @@ extension ProfileCell {
     }
 
     private func configure() {
-        guard
-            let imageUrl,
-            let url = URL(string: imageUrl)
-        else { return }
+        guard let imageUrl else { return }
 
-        imageView.sd_setImage(with: url)
+        imageView.sd_setImage(with: imageUrl)
     }
 
 }
