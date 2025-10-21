@@ -34,7 +34,6 @@ class HomeController: UIViewController {
         let view = UIView()
 
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemPink
         view.layer.cornerRadius = 8
 
         return view
@@ -141,13 +140,18 @@ extension HomeController {
     }
 
     private func performSwipe(withDirection direction: SwipeDirection) {
-        guard let topCardView else { return }
+        guard let topCard = topCardView else { return }
 
         previousCard = cardViews.popLast()
 
+        let nextCard = cardViews.last
+
+        nextCard?.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+        nextCard?.alpha = 0.5
+
         let directionValue = CGFloat(direction.rawValue)
         let angle: CGFloat = (.pi / 6) * directionValue
-        let xTranslation: CGFloat = topCardView.frame.width * directionValue
+        let xTranslation: CGFloat = topCard.frame.width * directionValue
 
         let transform = CGAffineTransform(translationX: xTranslation, y: 0)
             .rotated(by: angle)
@@ -163,13 +167,16 @@ extension HomeController {
             duration: 0.3,
             curve: .easeIn
         ) {
-            topCardView.transform = transform
+            topCard.transform = transform
+
+            nextCard?.transform = .identity
+            nextCard?.alpha = 1.0
         }
 
         animation.startAnimation()
 
         animation.addCompletion { _ in
-            topCardView.removeFromSuperview()
+            topCard.removeFromSuperview()
         }
     }
 
