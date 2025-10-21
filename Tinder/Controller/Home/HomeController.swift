@@ -145,9 +145,15 @@ extension HomeController {
 
         previousCard = cardViews.popLast()
 
-        let xTransalation = CGFloat(direction.rawValue)
-        let angle = CGFloat(direction.rawValue) * 0.25
-        let rotationalTransform = CGAffineTransform(rotationAngle: angle)
+        topCardView.setAnchor(CGPoint(x: 0.5, y: 1))
+
+        let directionValue = CGFloat(direction.rawValue)
+        let angle: CGFloat = (.pi / 8) * directionValue
+        let xTranslation: CGFloat = topCardView.frame.width * directionValue
+        let yTranslation: CGFloat = -200
+
+        let transform = CGAffineTransform(rotationAngle: angle)
+            .translatedBy(x: xTranslation, y: yTranslation)
 
         switch direction {
         case .left:
@@ -158,13 +164,10 @@ extension HomeController {
 
         let animation = UIViewPropertyAnimator(
             duration: 0.75,
-            dampingRatio: 0.7
+            curve: .easeIn
         ) {
-            topCardView.alpha = 0.5
-            topCardView.transform = rotationalTransform.translatedBy(
-                x: xTransalation,
-                y: 0
-            )
+            topCardView.alpha = 0.0
+            topCardView.transform = transform
         }
 
         animation.startAnimation()

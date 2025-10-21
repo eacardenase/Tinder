@@ -9,8 +9,8 @@ import SDWebImage
 import UIKit
 
 enum SwipeDirection: Int {
-    case left = -1000
-    case right = 1000
+    case left = -1
+    case right = 1
 }
 
 protocol CardViewDelegate: AnyObject {
@@ -212,7 +212,7 @@ extension CardView {
             dampingRatio: 0.7
         ) {
             if shouldDismissCard {
-                let xTransalation = CGFloat(direction.rawValue)
+                let xTransalation = CGFloat(direction.rawValue) * 1000
                 let offScreenTransform = self.transform.translatedBy(
                     x: xTransalation,
                     y: 0
@@ -270,6 +270,37 @@ extension CardView {
 
     @objc func infoButtonTapped(_ sender: UIButton) {
         delegate?.cardView(self, wantsToShowProfileFor: viewModel.user)
+    }
+
+}
+
+// MARK: - UIView
+
+extension UIView {
+
+    func setAnchor(_ point: CGPoint) {
+        var newPoint = CGPoint(
+            x: bounds.size.width * point.x,
+            y: bounds.size.height * point.y
+        )
+        var oldPoint = CGPoint(
+            x: bounds.size.width * layer.anchorPoint.x,
+            y: bounds.size.height * layer.anchorPoint.y
+        )
+
+        newPoint = newPoint.applying(transform)
+        oldPoint = oldPoint.applying(transform)
+
+        var position = layer.position
+
+        position.x -= oldPoint.x
+        position.x += newPoint.x
+
+        position.y -= oldPoint.y
+        position.y += newPoint.y
+
+        layer.position = position
+        layer.anchorPoint = point
     }
 
 }
