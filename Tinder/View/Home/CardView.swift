@@ -201,7 +201,7 @@ extension CardView {
 
     private func resetCardPosition(sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: nil)
-        let swapThreshold: CGFloat = 100
+        let swapThreshold: CGFloat = self.frame.width / 2
 
         let shouldDismissCard = abs(translation.x) > swapThreshold
         let direction: SwipeDirection =
@@ -212,7 +212,8 @@ extension CardView {
             dampingRatio: 0.7
         ) {
             if shouldDismissCard {
-                let xTransalation = CGFloat(direction.rawValue) * 1000
+                let xTransalation =
+                    CGFloat(direction.rawValue) * self.frame.width
                 let offScreenTransform = self.transform.translatedBy(
                     x: xTransalation,
                     y: 0
