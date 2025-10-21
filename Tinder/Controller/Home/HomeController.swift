@@ -12,6 +12,11 @@ class HomeController: UIViewController {
     // MARK: - Properties
 
     private var user: User?
+    private var cardViews = [CardView]()
+    private var previousCard: CardView?
+    private var topCardView: CardView? {
+        return cardViews.last
+    }
 
     private lazy var topStack: HomeNavigationStackView = {
         let stackView = HomeNavigationStackView()
@@ -35,7 +40,13 @@ class HomeController: UIViewController {
         return view
     }()
 
-    private let bottomStack = BottomControlsStackView()
+    private lazy var bottomStack: BottomControlsStackView = {
+        let stackView = BottomControlsStackView()
+
+        stackView.delegate = self
+
+        return stackView
+    }()
 
     // MARK: - View Lifecycle
 
@@ -73,6 +84,8 @@ extension HomeController {
                     equalTo: deckView.bottomAnchor
                 ),
             ])
+
+            cardViews.append(cardView)
         }
     }
 
@@ -124,6 +137,40 @@ extension HomeController {
             navController.modalPresentationStyle = .fullScreen
 
             self.present(navController, animated: true)
+        }
+    }
+
+    private func performSwipe(withDirection direction: SwipeDirection) {
+        guard let topCardView else { return }
+
+        previousCard = cardViews.popLast()
+
+        let xTransalation = CGFloat(direction.rawValue)
+        let angle = CGFloat(direction.rawValue) * 0.25
+        let rotationalTransform = CGAffineTransform(rotationAngle: angle)
+
+        switch direction {
+        case .left:
+            print("DEBUG: Swipe left")
+        case .right:
+            print("DEBUG: Swipe right")
+        }
+
+        let animation = UIViewPropertyAnimator(
+            duration: 0.75,
+            dampingRatio: 0.7
+        ) {
+            topCardView.alpha = 0.5
+            topCardView.transform = rotationalTransform.translatedBy(
+                x: xTransalation,
+                y: 0
+            )
+        }
+
+        animation.startAnimation()
+
+        animation.addCompletion { _ in
+            topCardView.removeFromSuperview()
         }
     }
 
@@ -243,6 +290,28 @@ extension HomeController: CardViewDelegate {
         controller.modalPresentationStyle = .fullScreen
 
         present(controller, animated: true)
+    }
+
+}
+
+// MARK: - BottomControlsStackViewDelegate
+
+extension HomeController: BottomControlsStackViewDelegate {
+
+    func handleRefresh() {
+        // guard let previousCard else { return }
+
+        // print("DEBUG: Put back user \(previousCard.viewModel.user.fullname)")
+
+        // cardViews.append(previousCard)
+    }
+
+    func handleDislike() {
+        performSwipe(withDirection: .left)
+    }
+
+    func handleLike() {
+        performSwipe(withDirection: .right)
     }
 
 }

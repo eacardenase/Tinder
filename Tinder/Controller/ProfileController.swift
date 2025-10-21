@@ -161,8 +161,7 @@ extension ProfileController {
         // collectionView
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(
-                equalTo: view.topAnchor,
-                constant: -48
+                equalTo: view.safeAreaLayoutGuide.topAnchor
             ),
             collectionView.leadingAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.leadingAnchor

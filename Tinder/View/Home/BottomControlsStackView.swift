@@ -7,33 +7,53 @@
 
 import UIKit
 
+protocol BottomControlsStackViewDelegate: AnyObject {
+
+    func handleLike()
+    func handleDislike()
+    func handleRefresh()
+
+}
+
 class BottomControlsStackView: UIStackView {
 
     // MARK: - Properties
 
-    let refreshButton: UIButton = {
+    weak var delegate: BottomControlsStackViewDelegate?
+
+    private lazy var refreshButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(resource: .refreshCircle).withRenderingMode(
             .alwaysOriginal
         )
 
         button.setImage(image, for: .normal)
+        button.addTarget(
+            self,
+            action: #selector(refreshButtonTapped),
+            for: .touchUpInside
+        )
 
         return button
     }()
 
-    let dislikeButton: UIButton = {
+    private lazy var dislikeButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(resource: .dismissCircle).withRenderingMode(
             .alwaysOriginal
         )
 
         button.setImage(image, for: .normal)
+        button.addTarget(
+            self,
+            action: #selector(dislikeButtonTapped),
+            for: .touchUpInside
+        )
 
         return button
     }()
 
-    let superLikeButton: UIButton = {
+    private let superLikeButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(resource: .superLikeCircle).withRenderingMode(
             .alwaysOriginal
@@ -44,18 +64,23 @@ class BottomControlsStackView: UIStackView {
         return button
     }()
 
-    let likeButton: UIButton = {
+    private lazy var likeButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(resource: .likeCircle).withRenderingMode(
             .alwaysOriginal
         )
 
         button.setImage(image, for: .normal)
+        button.addTarget(
+            self,
+            action: #selector(likeButtonTapped),
+            for: .touchUpInside
+        )
 
         return button
     }()
 
-    let boostButton: UIButton = {
+    private let boostButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(resource: .boostCircle).withRenderingMode(
             .alwaysOriginal
@@ -98,6 +123,24 @@ extension BottomControlsStackView {
         distribution = .equalCentering
 
         heightAnchor.constraint(equalToConstant: 100).isActive = true
+    }
+
+}
+
+// MARK: - Actions
+
+extension BottomControlsStackView {
+
+    @objc func refreshButtonTapped(_ sender: UIButton) {
+        delegate?.handleRefresh()
+    }
+
+    @objc func dislikeButtonTapped(_ sender: UIButton) {
+        delegate?.handleDislike()
+    }
+
+    @objc func likeButtonTapped(_ sender: UIButton) {
+        delegate?.handleLike()
     }
 
 }

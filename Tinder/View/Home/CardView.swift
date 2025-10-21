@@ -9,8 +9,8 @@ import SDWebImage
 import UIKit
 
 enum SwipeDirection: Int {
-    case left = -1
-    case right = 1
+    case left = -1000
+    case right = 1000
 }
 
 protocol CardViewDelegate: AnyObject {
@@ -25,7 +25,7 @@ class CardView: UIView {
 
     weak var delegate: CardViewDelegate?
 
-    private var viewModel: CardViewModel
+    private(set) var viewModel: CardViewModel
 
     private lazy var imageView: UIImageView = {
         let _imageView = UIImageView()
@@ -212,7 +212,7 @@ extension CardView {
             dampingRatio: 0.7
         ) {
             if shouldDismissCard {
-                let xTransalation = CGFloat(direction.rawValue) * 1000
+                let xTransalation = CGFloat(direction.rawValue)
                 let offScreenTransform = self.transform.translatedBy(
                     x: xTransalation,
                     y: 0
@@ -242,7 +242,6 @@ extension CardView {
 extension CardView {
 
     @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
-
         switch sender.state {
         case .began:
             superview?.subviews.forEach { $0.layer.removeAllAnimations() }
