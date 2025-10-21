@@ -148,10 +148,9 @@ extension HomeController {
         let directionValue = CGFloat(direction.rawValue)
         let angle: CGFloat = (.pi / 6) * directionValue
         let xTranslation: CGFloat = topCardView.frame.width * directionValue
-        let yTranslation: CGFloat = -200
 
-        let transform = CGAffineTransform(rotationAngle: angle)
-            .translatedBy(x: xTranslation, y: yTranslation)
+        let transform = CGAffineTransform(translationX: xTranslation, y: 0)
+            .rotated(by: angle)
 
         switch direction {
         case .left:
