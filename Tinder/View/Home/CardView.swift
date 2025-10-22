@@ -8,7 +8,7 @@
 import SDWebImage
 import UIKit
 
-enum SwipeDirection: Int {
+enum SwipeDirection: Int, Codable {
     case left = -1
     case right = 1
 }

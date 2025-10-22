@@ -156,27 +156,30 @@ extension HomeController {
         let transform = CGAffineTransform(translationX: xTranslation, y: 0)
             .rotated(by: angle)
 
-        switch direction {
-        case .left:
-            print("DEBUG: Swipe left")
-        case .right:
-            print("DEBUG: Swipe right")
-        }
+        SwipeService.saveSwipe(for: topCard.viewModel.user, with: direction) {
+            error in
 
-        let animation = UIViewPropertyAnimator(
-            duration: 0.3,
-            curve: .easeIn
-        ) {
-            topCard.transform = transform
+            if let error {
+                print(
+                    "DEBUG: Failed to save swipe with error: \(error.localizedDescription)"
+                )
+            }
 
-            nextCard?.transform = .identity
-            nextCard?.alpha = 1.0
-        }
+            let animation = UIViewPropertyAnimator(
+                duration: 0.3,
+                curve: .easeIn
+            ) {
+                topCard.transform = transform
 
-        animation.startAnimation()
+                nextCard?.transform = .identity
+                nextCard?.alpha = 1.0
+            }
 
-        animation.addCompletion { _ in
-            topCard.removeFromSuperview()
+            animation.startAnimation()
+
+            animation.addCompletion { _ in
+                topCard.removeFromSuperview()
+            }
         }
     }
 

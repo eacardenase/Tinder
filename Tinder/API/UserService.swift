@@ -66,12 +66,11 @@ struct UserService {
     ) {
         guard let currentUserId = AuthService.currentUser?.uid else { return }
 
-        Firestore.firestore().collection("users")
-//            .whereField(
-//            "uid",
-//            isNotEqualTo: currentUserId
-//        )
-            .getDocuments {
+        Firestore.firestore().collection("users").whereField(
+            "uid",
+            isNotEqualTo: currentUserId
+        )
+        .getDocuments {
             (snapshot, error) in
 
             if let error {
