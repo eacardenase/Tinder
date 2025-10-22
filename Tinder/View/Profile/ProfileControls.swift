@@ -1,5 +1,5 @@
 //
-//  ProfileControlsStackView.swift
+//  ProfileControls.swift
 //  Tinder
 //
 //  Created by Edwin Cardenas on 10/17/25.
@@ -7,9 +7,18 @@
 
 import UIKit
 
-class ProfileControlsStackView: UIStackView {
+protocol ProfileControlsDelegate: AnyObject {
+
+    func handleLike()
+    func handleDislike()
+
+}
+
+class ProfileControls: UIStackView {
 
     // MARK: - Properties
+
+    weak var delegate: ProfileControlsDelegate?
 
     private lazy var dislikeButton: UIButton = {
         let button = UIButton(type: .system)
@@ -74,7 +83,7 @@ class ProfileControlsStackView: UIStackView {
 
 // MARK: - Helpers
 
-extension ProfileControlsStackView {
+extension ProfileControls {
 
     private func setupViews() {
         translatesAutoresizingMaskIntoConstraints = false
@@ -90,10 +99,10 @@ extension ProfileControlsStackView {
 
 // MARK: - Actions
 
-extension ProfileControlsStackView {
+extension ProfileControls {
 
     @objc func dislikeButtonTapped(_ sender: UIButton) {
-        print(#function)
+        delegate?.handleDislike()
     }
 
     @objc func superLikeButtonTapped(_ sender: UIButton) {
@@ -101,7 +110,7 @@ extension ProfileControlsStackView {
     }
 
     @objc func likeButtonTapped(_ sender: UIButton) {
-        print(#function)
+        delegate?.handleLike()
     }
 
 }

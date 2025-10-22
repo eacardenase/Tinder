@@ -7,10 +7,8 @@
 
 import UIKit
 
-protocol BottomControlsStackViewDelegate: AnyObject {
+protocol BottomControlsStackViewDelegate: ProfileControlsDelegate {
 
-    func handleLike()
-    func handleDislike()
     func handleRefresh()
 
 }

@@ -316,6 +316,7 @@ extension HomeController: CardViewDelegate {
         )
 
         controller.modalPresentationStyle = .fullScreen
+        controller.delegate = self
 
         present(controller, animated: true)
     }
@@ -340,6 +341,21 @@ extension HomeController: BottomControlsStackViewDelegate {
 
     func handleLike() {
         performSwipe(withDirection: .right)
+    }
+
+}
+
+// MARK: - ProfileControllerDelegate
+
+extension HomeController: ProfileControllerDelegate {
+
+    func profileController(
+        _ controller: ProfileController,
+        wantsToSwipeTo direction: SwipeDirection
+    ) {
+        controller.dismiss(animated: true) {
+            self.performSwipe(withDirection: direction)
+        }
     }
 
 }

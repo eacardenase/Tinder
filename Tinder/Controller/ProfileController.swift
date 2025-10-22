@@ -7,11 +7,21 @@
 
 import UIKit
 
+protocol ProfileControllerDelegate: AnyObject {
+
+    func profileController(
+        _ controller: ProfileController,
+        wantsToSwipeTo direction: SwipeDirection
+    )
+
+}
+
 class ProfileController: UIViewController {
 
     // MARK: - Properties
 
     let viewModel: ProfileViewModel
+    weak var delegate: ProfileControllerDelegate?
 
     private let collectionViewLayout: UICollectionViewLayout = {
         let itemSize = NSCollectionLayoutSize(
@@ -112,7 +122,7 @@ class ProfileController: UIViewController {
         return label
     }()
 
-    private let controlsStackView = ProfileControlsStackView()
+    private let profileControls = ProfileControls()
 
     // MARK: - Initializers
 
@@ -120,6 +130,8 @@ class ProfileController: UIViewController {
         self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
+
+        profileControls.delegate = self
     }
 
     required init?(coder: NSCoder) {
@@ -156,7 +168,7 @@ extension ProfileController {
         view.addSubview(barStackView)
         view.addSubview(dismissButton)
         view.addSubview(infoStackView)
-        view.addSubview(controlsStackView)
+        view.addSubview(profileControls)
 
         // collectionView
         NSLayoutConstraint.activate([
@@ -224,10 +236,10 @@ extension ProfileController {
 
         // controlsStackView
         NSLayoutConstraint.activate([
-            controlsStackView.centerXAnchor.constraint(
+            profileControls.centerXAnchor.constraint(
                 equalTo: view.centerXAnchor
             ),
-            controlsStackView.bottomAnchor.constraint(
+            profileControls.bottomAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.bottomAnchor,
                 constant: -32
             ),
@@ -287,6 +299,20 @@ extension ProfileController {
 
     @objc func dismissButtonTapped(_ sender: UIButton) {
         dismiss(animated: true)
+    }
+
+}
+
+// MARK: - ProfileControlsDelegate
+
+extension ProfileController: ProfileControlsDelegate {
+
+    func handleLike() {
+        delegate?.profileController(self, wantsToSwipeTo: .right)
+    }
+
+    func handleDislike() {
+        delegate?.profileController(self, wantsToSwipeTo: .left)
     }
 
 }
