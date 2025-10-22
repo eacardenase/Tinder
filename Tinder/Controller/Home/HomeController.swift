@@ -291,6 +291,25 @@ extension HomeController: SettingsControllerDelegate {
 
 extension HomeController: CardViewDelegate {
 
+    func cardView(_ view: CardView, didSwipeWith direction: SwipeDirection) {
+        guard let topCard = topCardView else { return }
+
+        SwipeService.saveSwipe(for: topCard.viewModel.user, with: direction) {
+            error in
+            if let error {
+                print(
+                    "DEBUG: Failed to save swipe with error: \(error.localizedDescription)"
+                )
+
+                return
+            }
+
+            view.removeFromSuperview()
+
+            self.previousCard = self.cardViews.popLast()
+        }
+    }
+
     func cardView(_ view: CardView, wantsToShowProfileFor user: User) {
         let controller = ProfileController(
             viewModel: ProfileViewModel(user: user)

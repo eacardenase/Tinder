@@ -16,6 +16,7 @@ enum SwipeDirection: Int, Codable {
 protocol CardViewDelegate: AnyObject {
 
     func cardView(_ view: CardView, wantsToShowProfileFor user: User)
+    func cardView(_ view: CardView, didSwipeWith direction: SwipeDirection)
 
 }
 
@@ -231,7 +232,7 @@ extension CardView {
 
         animation.addCompletion { _ in
             if shouldDismissCard {
-                self.removeFromSuperview()
+                self.delegate?.cardView(self, didSwipeWith: direction)
             }
         }
     }
