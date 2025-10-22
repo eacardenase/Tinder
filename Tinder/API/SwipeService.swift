@@ -25,11 +25,16 @@ struct SwipeService {
         )
 
         do {
-            try Firestore.firestore().collection("swipes").document(
-                currentUserId
-            ).setData(from: swipe)
+            try Firestore.firestore().collection("swipes")
+                .addDocument(from: swipe)
+
+            DispatchQueue.main.async {
+                completion(nil)
+            }
         } catch {
-            completion(.serverError(error.localizedDescription))
+            DispatchQueue.main.async {
+                completion(.serverError(error.localizedDescription))
+            }
         }
 
     }
