@@ -7,6 +7,12 @@
 
 import UIKit
 
+protocol AuthenticationDelegate: AnyObject {
+
+    func authenticationComplete()
+
+}
+
 protocol AuthenticationProtocol {
 
     func updateForm()

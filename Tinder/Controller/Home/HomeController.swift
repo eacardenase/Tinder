@@ -129,6 +129,8 @@ extension HomeController {
     private func presentLoginController() {
         DispatchQueue.main.async {
             let loginController = LoginController()
+            loginController.delegate = self
+
             let navController = UINavigationController(
                 rootViewController: loginController
             )
@@ -355,6 +357,26 @@ extension HomeController: ProfileControllerDelegate {
     ) {
         controller.dismiss(animated: true) {
             self.performSwipe(withDirection: direction)
+        }
+    }
+
+}
+
+// MARK: - AuthenticationDelegate
+
+extension HomeController: AuthenticationDelegate {
+
+    func authenticationComplete() {
+        dismiss(animated: true)
+
+        AuthService.verifyLogin { result in
+            switch result {
+            case .success(let user):
+                self.user = user
+                self.fetchUsers()
+            case .failure(let error):
+                print("DEBUG: \(error.localizedDescription)")
+            }
         }
     }
 
