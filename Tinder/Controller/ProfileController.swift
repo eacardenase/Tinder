@@ -283,12 +283,14 @@ extension ProfileController: UICollectionViewDataSource {
 
 extension ProfileController: UICollectionViewDelegate {
 
-    func collectionView(
-        _ collectionView: UICollectionView,
-        willDisplay cell: UICollectionViewCell,
-        forItemAt indexPath: IndexPath
+    func scrollViewWillEndDragging(
+        _ scrollView: UIScrollView,
+        withVelocity velocity: CGPoint,
+        targetContentOffset: UnsafeMutablePointer<CGPoint>
     ) {
-        barStackView.highlightSegment(at: indexPath.item)
+        let index = targetContentOffset.pointee.x / view.frame.width
+
+        barStackView.highlightSegment(at: Int(index))
     }
 
 }
