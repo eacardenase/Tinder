@@ -54,7 +54,6 @@ class HomeController: UIViewController {
 
         authenticateUser()
         setupViews()
-        fetchUsers()
     }
 
 }
@@ -196,6 +195,7 @@ extension HomeController {
             switch result {
             case .success(let user):
                 self.user = user
+                self.fetchUsers()
             case .failure(let error):
                 print("DEBUG: \(error.localizedDescription)")
 
@@ -221,7 +221,9 @@ extension HomeController {
     }
 
     func fetchUsers() {
-        UserService.fetchUsers { result in
+        guard let currentUser = user else { return }
+
+        UserService.fetchUsers(for: currentUser) { result in
             switch result {
             case .success(let users):
                 self.viewModels = users.map { CardViewModel(user: $0) }

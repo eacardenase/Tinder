@@ -62,39 +62,39 @@ struct UserService {
     }
 
     static func fetchUsers(
+        for user: User,
         completion: @escaping (Result<[User], NetworkingError>) -> Void
     ) {
-        guard let currentUserId = AuthService.currentUser?.uid else { return }
+        let minAge = user.minSeekingAge
+        let maxAge = user.maxSeekingAge
 
-        Firestore.firestore().collection("users").whereField(
-            "uid",
-            isNotEqualTo: currentUserId
-        )
-        .getDocuments {
-            (snapshot, error) in
+        Firestore.firestore().collection("users")
+            .whereField("uid", isNotEqualTo: user.uid)
+            .whereField("age", isGreaterThanOrEqualTo: minAge)
+            .whereField("age", isLessThanOrEqualTo: maxAge)
+            .getDocuments { (snapshot, error) in
+                if let error {
+                    completion(
+                        .failure(.serverError(error.localizedDescription))
+                    )
 
-            if let error {
-                completion(
-                    .failure(.serverError(error.localizedDescription))
-                )
+                    return
+                }
 
-                return
+                guard let snapshot else {
+                    completion(
+                        .failure(.serverError("Failed to get users data."))
+                    )
+
+                    return
+                }
+
+                let users = snapshot.documents.compactMap { document in
+                    return try? document.data(as: User.self)
+                }
+
+                completion(.success(users))
             }
-
-            guard let snapshot else {
-                completion(
-                    .failure(.serverError("Failed to get users data."))
-                )
-
-                return
-            }
-
-            let users = snapshot.documents.compactMap { document in
-                return try? document.data(as: User.self)
-            }
-
-            completion(.success(users))
-        }
     }
 
 }
