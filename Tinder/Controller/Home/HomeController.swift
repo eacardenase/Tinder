@@ -63,6 +63,9 @@ class HomeController: UIViewController {
 extension HomeController {
 
     private func configureCards() {
+        cardViews.removeAll()
+        deckView.subviews.forEach { $0.removeFromSuperview() }
+
         viewModels.forEach { viewModel in
             let cardView = CardView(viewModel: viewModel)
             cardView.delegate = self
@@ -271,12 +274,15 @@ extension HomeController: SettingsControllerDelegate {
         self.showLoader()
 
         controller.dismiss(animated: true) {
-            self.user = user
 
             UserService.store(user) { result in
                 self.showLoader(false)
 
-                if case .failure(let error) = result {
+                switch result {
+                case .success(let user):
+                    self.user = user
+                    self.fetchUsers()
+                case .failure(let error):
                     print(
                         "DEBUG: Failed to update user with error: \(error.localizedDescription)"
                     )
