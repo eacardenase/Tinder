@@ -26,14 +26,15 @@ class MatchView: UIView {
         return imageView
     }()
 
-    private let descriptionLabel: UILabel = {
+    private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
 
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         label.textColor = .white
-        label.font = .preferredFont(forTextStyle: .title1)
+        label.font = .preferredFont(forTextStyle: .headline)
         label.numberOfLines = 0
+        label.text = "You and \(matchedUser.fullname) have liked each other!"
 
         return label
     }()
@@ -50,7 +51,7 @@ class MatchView: UIView {
         return imageView
     }()
 
-    private let matcgedUserImageView: UIImageView = {
+    private let matchedUserImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(resource: .kelly1))
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -81,7 +82,7 @@ class MatchView: UIView {
         let button = UIButton(type: .system)
 
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("KEEP SWIPING", for: .normal)
+        button.setTitle("Keep Swiping", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.addTarget(
             self,
@@ -102,6 +103,13 @@ class MatchView: UIView {
 
         configureBlurView()
         setupViews()
+
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissView)
+        )
+
+        addGestureRecognizer(tapGesture)
     }
 
     required init?(coder: NSCoder) {
@@ -120,13 +128,106 @@ extension MatchView {
         addSubview(matchImageView)
         addSubview(descriptionLabel)
         addSubview(currentUserImageView)
-        addSubview(matchImageView)
+        addSubview(matchedUserImageView)
         addSubview(sendMessageButton)
         addSubview(keepSwipingButton)
+
+        // matchImageView
+        NSLayoutConstraint.activate([
+            matchImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            matchImageView.bottomAnchor.constraint(
+                equalTo: descriptionLabel.topAnchor,
+                constant: -16
+            ),
+        ])
+
+        // descriptionLabel
+        NSLayoutConstraint.activate([
+            descriptionLabel.leadingAnchor.constraint(
+                equalTo: leadingAnchor,
+                constant: 16
+            ),
+            descriptionLabel.trailingAnchor.constraint(
+                equalTo: trailingAnchor,
+                constant: -16
+            ),
+            descriptionLabel.bottomAnchor.constraint(
+                equalTo: currentUserImageView.topAnchor,
+                constant: -32
+            ),
+
+        ])
+
+        let currentUserImageHeightAnchor = currentUserImageView.heightAnchor
+            .constraint(equalToConstant: 140)
+
+        // currentUserImageView
+        NSLayoutConstraint.activate([
+            currentUserImageView.leadingAnchor.constraint(
+                equalTo: leadingAnchor,
+                constant: 48
+            ),
+            currentUserImageView.centerYAnchor.constraint(
+                equalTo: centerYAnchor
+            ),
+            currentUserImageHeightAnchor,
+            currentUserImageView.widthAnchor.constraint(
+                equalToConstant: currentUserImageHeightAnchor.constant
+            ),
+        ])
+
+        // matchedUserImageView
+        NSLayoutConstraint.activate([
+            matchedUserImageView.trailingAnchor.constraint(
+                equalTo: trailingAnchor,
+                constant: -48
+            ),
+            matchedUserImageView.centerYAnchor.constraint(
+                equalTo: currentUserImageView.centerYAnchor
+            ),
+            matchedUserImageView.heightAnchor.constraint(
+                equalToConstant: currentUserImageHeightAnchor.constant
+            ),
+            matchedUserImageView.widthAnchor.constraint(
+                equalToConstant: currentUserImageHeightAnchor.constant
+            ),
+        ])
+
+        currentUserImageView.layer.cornerRadius =
+            currentUserImageHeightAnchor.constant / 2
+        matchedUserImageView.layer.cornerRadius =
+            currentUserImageHeightAnchor.constant / 2
+
+        // sendMessageButton
+        NSLayoutConstraint.activate([
+            sendMessageButton.topAnchor.constraint(
+                equalTo: currentUserImageView.bottomAnchor,
+                constant: 32
+            ),
+            sendMessageButton.leadingAnchor.constraint(
+                equalTo: currentUserImageView.leadingAnchor,
+            ),
+            sendMessageButton.trailingAnchor.constraint(
+                equalTo: matchedUserImageView.trailingAnchor
+            ),
+        ])
+
+        // keepSwipingButton
+        NSLayoutConstraint.activate([
+            keepSwipingButton.topAnchor.constraint(
+                equalTo: sendMessageButton.bottomAnchor,
+                constant: 16
+            ),
+            keepSwipingButton.leadingAnchor.constraint(
+                equalTo: sendMessageButton.leadingAnchor
+            ),
+            keepSwipingButton.trailingAnchor.constraint(
+                equalTo: sendMessageButton.trailingAnchor
+            ),
+        ])
     }
 
     private func configureBlurView() {
-        visualEffectView.alpha = 0
         visualEffectView.translatesAutoresizingMaskIntoConstraints = false
 
         addSubview(visualEffectView)
@@ -137,10 +238,6 @@ extension MatchView {
             visualEffectView.trailingAnchor.constraint(equalTo: trailingAnchor),
             visualEffectView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
-
-        UIViewPropertyAnimator(duration: 0.5, curve: .easeInOut) {
-            self.visualEffectView.alpha = 1
-        }.startAnimation()
     }
 
 }
@@ -155,6 +252,19 @@ extension MatchView {
 
     @objc func keepSwipingButtonTapped(_ sender: UIButton) {
         print(#function)
+    }
+
+    @objc func dismissView(_ sender: UITapGestureRecognizer) {
+        let animation = UIViewPropertyAnimator(
+            duration: 0.5,
+            curve: .easeInOut
+        ) { self.alpha = 0 }
+
+        animation.addCompletion { _ in
+            self.removeFromSuperview()
+        }
+
+        animation.startAnimation()
     }
 
 }

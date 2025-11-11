@@ -194,6 +194,7 @@ extension HomeController {
         guard let currentUser = self.user else { return }
 
         let matchView = MatchView(currentUser: currentUser, matchedUser: user)
+        matchView.alpha = 0
 
         view.addSubview(matchView)
 
@@ -203,6 +204,10 @@ extension HomeController {
             matchView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             matchView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+
+        UIViewPropertyAnimator(duration: 0.5, curve: .easeInOut) {
+            matchView.alpha = 1
+        }.startAnimation()
     }
 
 }
