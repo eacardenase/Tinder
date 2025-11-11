@@ -244,28 +244,25 @@ extension HomeController {
         with direction: SwipeDirection,
         completion: @escaping (NetworkingError?) -> Void
     ) {
-        SwipeService.saveSwipe(for: user, with: direction) { error in
-            if let error {
-                print(
-                    "DEBUG: Failed to save swipe and check for match with error \(error.localizedDescription)"
-                )
+        SwipeService.saveSwipe(for: user, with: direction) { result in
+            switch result {
+            case .success(let swipe):
+                guard direction == .right else { return }
 
-                return
-            }
+                SwipeService.checkIfMatchExists(for: swipe) { result in
+                    switch result {
+                    case .success(let direction):
+                        if case .right = direction {
+                            print("There is a match!")
+                        }
 
-            guard direction == .right else { return }
-
-            SwipeService.checkIfMatchExists(for: user) { result in
-                switch result {
-                case .success(let direction):
-                    if case .right = direction {
-                        print("There is a match!")
+                        completion(nil)
+                    case .failure(let error):
+                        completion(error)
                     }
-
-                    completion(nil)
-                case .failure(let error):
-                    completion(error)
                 }
+            case .failure(let error):
+                print(error.localizedDescription)
             }
         }
     }

@@ -14,7 +14,7 @@ struct SwipeService {
     static func saveSwipe(
         for user: User,
         with direction: SwipeDirection,
-        completion: @escaping (NetworkingError?) -> Void
+        completion: @escaping (Result<Swipe, NetworkingError>) -> Void
     ) {
         guard let currentUserId = AuthService.currentUser?.uid else { return }
 
@@ -29,25 +29,29 @@ struct SwipeService {
                 .addDocument(from: swipe)
 
             DispatchQueue.main.async {
-                completion(nil)
+                completion(.success(swipe))
             }
         } catch {
             DispatchQueue.main.async {
-                completion(.serverError(error.localizedDescription))
+                completion(
+                    .failure(
+                        .serverError(error.localizedDescription)
+                    )
+                )
             }
         }
 
     }
 
     static func checkIfMatchExists(
-        for user: User,
+        for swipe: Swipe,
         completion: @escaping (Result<SwipeDirection, NetworkingError>) -> Void
     ) {
-        guard let currentUserId = AuthService.currentUser?.uid else { return }
-
         Firestore.firestore().collection("swipes")
-            .whereField("userId", isEqualTo: currentUserId)
-            .whereField("targetId", isEqualTo: user.uid).getDocuments {
+            .whereField("userId", isEqualTo: swipe.userId)
+            .whereField("targetId", isEqualTo: swipe.targetId)
+            .limit(to: 1)
+            .getDocuments {
                 (snapshot, error) in
 
                 if let error {
@@ -58,23 +62,13 @@ struct SwipeService {
                     return
                 }
 
-                guard let snapshot else {
-                    completion(
-                        .failure(.serverError("Failed to get swipe data."))
-                    )
-
-                    return
-                }
-
-                let swipes = snapshot.documents.compactMap { document in
-                    return try? document.data(as: Swipe.self)
-                }
-
-                guard let swipe = swipes.first else {
+                guard let snapshot,
+                    let document = snapshot.documents.first
+                else {
                     completion(
                         .failure(
                             .serverError(
-                                "The user \(currentUserId) has no swipe for user \(user.uid)"
+                                "The user \(swipe.userId) has no swipe for user \(swipe.targetId)"
                             )
                         )
                     )
@@ -82,7 +76,15 @@ struct SwipeService {
                     return
                 }
 
-                completion(.success(swipe.direction))
+                do {
+                    let matchedSwipe = try document.data(as: Swipe.self)
+
+                    completion(.success(matchedSwipe.direction))
+                } catch {
+                    completion(
+                        .failure(.serverError("Failed to get swipe data."))
+                    )
+                }
             }
     }
 
