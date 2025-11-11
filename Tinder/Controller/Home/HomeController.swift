@@ -167,9 +167,9 @@ extension HomeController {
             error in
 
             if let error {
-                print(
-                    "DEBUG: Failed to save swipe with error: \(error.localizedDescription)"
-                )
+                print(error)
+
+                return
             }
 
             let animation = UIViewPropertyAnimator(
@@ -188,6 +188,21 @@ extension HomeController {
                 topCard.removeFromSuperview()
             }
         }
+    }
+
+    private func presentMatchView(for user: User) {
+        guard let currentUser = self.user else { return }
+
+        let matchView = MatchView(currentUser: currentUser, matchedUser: user)
+
+        view.addSubview(matchView)
+
+        NSLayoutConstraint.activate([
+            matchView.topAnchor.constraint(equalTo: view.topAnchor),
+            matchView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            matchView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            matchView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
     }
 
 }
@@ -251,9 +266,9 @@ extension HomeController {
 
                 SwipeService.checkIfMatchExists(for: swipe) { result in
                     switch result {
-                    case .success(let direction):
-                        if case .right = direction {
-                            print("There is a match!")
+                    case .success(let matchExists):
+                        if matchExists {
+                            self.presentMatchView(for: user)
                         }
 
                         completion(nil)
@@ -340,10 +355,9 @@ extension HomeController: CardViewDelegate {
             with: direction
         ) {
             error in
+
             if let error {
-                print(
-                    "DEBUG: Failed to save swipe with error: \(error.localizedDescription)"
-                )
+                print(error)
 
                 return
             }
