@@ -39,4 +39,51 @@ struct SwipeService {
 
     }
 
+    static func checkIfMatchExists(
+        for user: User,
+        completion: @escaping (Result<SwipeDirection, NetworkingError>) -> Void
+    ) {
+        guard let currentUserId = AuthService.currentUser?.uid else { return }
+
+        Firestore.firestore().collection("swipes")
+            .whereField("userId", isEqualTo: currentUserId)
+            .whereField("targetId", isEqualTo: user.uid).getDocuments {
+                (snapshot, error) in
+
+                if let error {
+                    completion(
+                        .failure(.serverError(error.localizedDescription))
+                    )
+
+                    return
+                }
+
+                guard let snapshot else {
+                    completion(
+                        .failure(.serverError("Failed to get swipe data."))
+                    )
+
+                    return
+                }
+
+                let swipes = snapshot.documents.compactMap { document in
+                    return try? document.data(as: Swipe.self)
+                }
+
+                guard let swipe = swipes.first else {
+                    completion(
+                        .failure(
+                            .serverError(
+                                "The user \(currentUserId) has no swipe for user \(user.uid)"
+                            )
+                        )
+                    )
+
+                    return
+                }
+
+                completion(.success(swipe.direction))
+            }
+    }
+
 }

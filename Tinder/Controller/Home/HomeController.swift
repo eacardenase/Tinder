@@ -160,7 +160,10 @@ extension HomeController {
         let transform = CGAffineTransform(translationX: xTranslation, y: 0)
             .rotated(by: angle)
 
-        SwipeService.saveSwipe(for: topCard.viewModel.user, with: direction) {
+        saveSwipeAndCheckForMatch(
+            for: topCard.viewModel.user,
+            with: direction
+        ) {
             error in
 
             if let error {
@@ -236,6 +239,37 @@ extension HomeController {
         }
     }
 
+    func saveSwipeAndCheckForMatch(
+        for user: User,
+        with direction: SwipeDirection,
+        completion: @escaping (NetworkingError?) -> Void
+    ) {
+        SwipeService.saveSwipe(for: user, with: direction) { error in
+            if let error {
+                print(
+                    "DEBUG: Failed to save swipe and check for match with error \(error.localizedDescription)"
+                )
+
+                return
+            }
+
+            guard direction == .right else { return }
+
+            SwipeService.checkIfMatchExists(for: user) { result in
+                switch result {
+                case .success(let direction):
+                    if case .right = direction {
+                        print("There is a match!")
+                    }
+
+                    completion(nil)
+                case .failure(let error):
+                    completion(error)
+                }
+            }
+        }
+    }
+
 }
 
 // MARK: - HomeNavigationStackViewDelegate
@@ -304,7 +338,10 @@ extension HomeController: CardViewDelegate {
     func cardView(_ view: CardView, didSwipeWith direction: SwipeDirection) {
         guard let topCard = topCardView else { return }
 
-        SwipeService.saveSwipe(for: topCard.viewModel.user, with: direction) {
+        saveSwipeAndCheckForMatch(
+            for: topCard.viewModel.user,
+            with: direction
+        ) {
             error in
             if let error {
                 print(
