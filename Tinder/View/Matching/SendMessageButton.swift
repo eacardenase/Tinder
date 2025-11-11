@@ -9,26 +9,34 @@ import UIKit
 
 class SendMessageButton: UIButton {
 
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
+    // MARK: - Properties
 
-        let gradientLayer = CAGradientLayer()
+    private lazy var gradientLayer: CAGradientLayer = {
+        let gradient = CAGradientLayer()
+
         let leftColor = UIColor(red: 0.99, green: 0.35, blue: 0.37, alpha: 1)
         let rightColor = UIColor(red: 0.89, green: 0, blue: 0.44, alpha: 1)
 
-        gradientLayer.colors = [leftColor.cgColor, rightColor.cgColor]
-        gradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
-        gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
+        gradient.frame = bounds
+        gradient.colors = [leftColor.cgColor, rightColor.cgColor]
+        gradient.startPoint = CGPoint(x: 0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1, y: 0.5)
+
+        return gradient
+    }()
+
+    // MARK: - View Lifecycle
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
 
         layer.insertSublayer(gradientLayer, at: 0)
-        layer.cornerRadius = rect.height / 2
+        layer.cornerRadius = frame.height / 2
         clipsToBounds = true
-
-        gradientLayer.frame = rect
     }
 
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: UIView.noIntrinsicMetric, height: 50)
+        return CGSize(width: UIView.noIntrinsicMetric, height: 60)
     }
 
 }
