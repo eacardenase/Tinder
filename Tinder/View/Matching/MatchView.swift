@@ -64,7 +64,7 @@ class MatchView: UIView {
     }()
 
     private lazy var sendMessageButton: UIButton = {
-        let button = UIButton(type: .system)
+        let button = SendMessageButton(type: .system)
 
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("SEND MESSAGE", for: .normal)
@@ -79,7 +79,7 @@ class MatchView: UIView {
     }()
 
     private lazy var keepSwipingButton: UIButton = {
-        let button = UIButton(type: .system)
+        let button = SendMessageButton(type: .system)
 
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Keep Swiping", for: .normal)
