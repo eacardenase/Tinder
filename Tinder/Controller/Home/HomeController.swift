@@ -155,39 +155,39 @@ extension HomeController {
 
         let directionValue = CGFloat(direction.rawValue)
         let angle: CGFloat = (.pi / 6) * directionValue
-        let xTranslation: CGFloat = topCard.frame.width * directionValue
+        let xTranslation: CGFloat = topCard.frame.width * 1.5 * directionValue
 
         let transform = CGAffineTransform(translationX: xTranslation, y: 0)
             .rotated(by: angle)
 
-        saveSwipeAndCheckForMatch(
-            for: topCard.viewModel.user,
-            with: direction
+        let animation = UIViewPropertyAnimator(
+            duration: 0.3,
+            curve: .easeIn
         ) {
-            error in
+            topCard.transform = transform
 
-            if let error {
-                print(error)
+            nextCard?.transform = .identity
+            nextCard?.alpha = 1.0
+        }
 
-                return
-            }
-
-            let animation = UIViewPropertyAnimator(
-                duration: 0.3,
-                curve: .easeIn
+        animation.addCompletion { _ in
+            self.saveSwipeAndCheckForMatch(
+                for: topCard.viewModel.user,
+                with: direction
             ) {
-                topCard.transform = transform
+                error in
 
-                nextCard?.transform = .identity
-                nextCard?.alpha = 1.0
-            }
+                if let error {
+                    print(error)
 
-            animation.startAnimation()
+                    return
+                }
 
-            animation.addCompletion { _ in
                 topCard.removeFromSuperview()
             }
         }
+
+        animation.startAnimation()
     }
 
     private func presentMatchView(for user: User) {
