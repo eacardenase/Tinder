@@ -103,6 +103,7 @@ class MatchView: UIView {
 
         configureBlurView()
         setupViews()
+        configureAnimations()
 
         let tapGesture = UITapGestureRecognizer(
             target: self,
@@ -238,6 +239,38 @@ extension MatchView {
             visualEffectView.trailingAnchor.constraint(equalTo: trailingAnchor),
             visualEffectView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
+    }
+
+    private func configureAnimations() {
+        let angle: CGFloat = 30 * .pi / 180
+
+        currentUserImageView.transform = CGAffineTransform(
+            rotationAngle: -angle
+        ).concatenating(CGAffineTransform(translationX: 200, y: 0))
+
+        matchedUserImageView.transform = CGAffineTransform(
+            rotationAngle: angle
+        ).concatenating(CGAffineTransform(translationX: -200, y: 0))
+
+        sendMessageButton.transform = CGAffineTransform(translationX: 500, y: 0)
+        keepSwipingButton.transform = CGAffineTransform(
+            translationX: -500,
+            y: 0
+        )
+
+        let animation = UIViewPropertyAnimator(duration: 1, curve: .easeInOut) {
+            self.currentUserImageView.transform = .identity
+            self.matchedUserImageView.transform = .identity
+        }
+
+        animation.addCompletion { _ in
+            UIViewPropertyAnimator(duration: 1, dampingRatio: 0.8) {
+                self.sendMessageButton.transform = .identity
+                self.keepSwipingButton.transform = .identity
+            }.startAnimation()
+        }
+
+        animation.startAnimation()
     }
 
 }

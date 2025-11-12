@@ -62,7 +62,7 @@ class KeepSwipingButton: UIButton {
     }
 
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: UIView.noIntrinsicMetric, height: 60)
+        return CGSize(width: UIView.noIntrinsicMetric, height: 50)
     }
 
 }
