@@ -193,7 +193,12 @@ extension HomeController {
     private func presentMatchView(for user: User) {
         guard let currentUser = self.user else { return }
 
-        let matchView = MatchView(currentUser: currentUser, matchedUser: user)
+        let viewModel = MatchViewViewModel(
+            currentUser: currentUser,
+            matchedUser: user
+        )
+
+        let matchView = MatchView(viewModel: viewModel)
         matchView.alpha = 0
 
         view.addSubview(matchView)

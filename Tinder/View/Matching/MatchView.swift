@@ -11,8 +11,7 @@ class MatchView: UIView {
 
     // MARK: - Properties
 
-    private let currentUser: User
-    private let matchedUser: User
+    private let viewModel: MatchViewViewModel
 
     private let visualEffectView = UIVisualEffectView(
         effect: UIBlurEffect(style: .dark)
@@ -34,13 +33,12 @@ class MatchView: UIView {
         label.textColor = .white
         label.font = .preferredFont(forTextStyle: .headline)
         label.numberOfLines = 0
-        label.text = "You and \(matchedUser.fullname) have liked each other!"
 
         return label
     }()
 
     private let currentUserImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(resource: .jane1))
+        let imageView = UIImageView()
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
@@ -52,7 +50,7 @@ class MatchView: UIView {
     }()
 
     private let matchedUserImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(resource: .kelly1))
+        let imageView = UIImageView()
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
@@ -86,7 +84,7 @@ class MatchView: UIView {
         button.setTitleColor(.white, for: .normal)
         button.addTarget(
             self,
-            action: #selector(keepSwipingButtonTapped),
+            action: #selector(dismissView),
             for: .touchUpInside
         )
 
@@ -95,15 +93,15 @@ class MatchView: UIView {
 
     // MARK: - Initializers
 
-    init(currentUser: User, matchedUser: User) {
-        self.currentUser = currentUser
-        self.matchedUser = matchedUser
+    init(viewModel: MatchViewViewModel) {
+        self.viewModel = viewModel
 
         super.init(frame: .zero)
 
         configureBlurView()
         setupViews()
         configureAnimations()
+        loadUserData()
 
         let tapGesture = UITapGestureRecognizer(
             target: self,
@@ -273,6 +271,12 @@ extension MatchView {
         animation.startAnimation()
     }
 
+    private func loadUserData() {
+        descriptionLabel.text = viewModel.matchLabelText
+        currentUserImageView.sd_setImage(with: viewModel.currentUserImageURL)
+        matchedUserImageView.sd_setImage(with: viewModel.matchedUserImageURL)
+    }
+
 }
 
 // MARK: - Actions
@@ -287,7 +291,7 @@ extension MatchView {
         print(#function)
     }
 
-    @objc func dismissView(_ sender: UITapGestureRecognizer) {
+    @objc func dismissView() {
         let animation = UIViewPropertyAnimator(
             duration: 0.5,
             curve: .easeInOut
