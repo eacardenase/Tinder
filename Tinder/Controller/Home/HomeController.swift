@@ -199,6 +199,7 @@ extension HomeController {
         )
 
         let matchView = MatchView(viewModel: viewModel)
+        matchView.delegate = self
         matchView.alpha = 0
 
         view.addSubview(matchView)
@@ -396,11 +397,9 @@ extension HomeController: CardViewDelegate {
 extension HomeController: BottomControlsStackViewDelegate {
 
     func handleRefresh() {
-        // guard let previousCard else { return }
+        guard let previousCard else { return }
 
-        // print("DEBUG: Put back user \(previousCard.viewModel.user.fullname)")
-
-        // cardViews.append(previousCard)
+        print("DEBUG: Put back user \(previousCard.viewModel.user.fullname)")
     }
 
     func handleDislike() {
@@ -444,6 +443,29 @@ extension HomeController: AuthenticationDelegate {
                 print("DEBUG: \(error.localizedDescription)")
             }
         }
+    }
+
+}
+
+// MARK: - MatchViewDelegate
+
+extension HomeController: MatchViewDelegate {
+
+    func matchView(_ view: MatchView, wantsToSendMessageTo user: User) {
+        view.removeFromSuperview()
+
+        let animation = UIViewPropertyAnimator(
+            duration: 0.5,
+            curve: .easeInOut
+        ) { view.alpha = 0 }
+
+        animation.addCompletion { _ in
+            view.removeFromSuperview()
+        }
+
+        animation.startAnimation()
+
+        print("DEBUG: Start conversation with \(user.fullname).")
     }
 
 }

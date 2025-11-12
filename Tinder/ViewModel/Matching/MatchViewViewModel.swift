@@ -12,7 +12,7 @@ struct MatchViewViewModel {
     // MARK: - Properties
 
     private let currentUser: User
-    private let matchedUser: User
+    let matchedUser: User
 
     var matchLabelText: String {
         return "You and \(matchedUser.fullname) have liked each other!"

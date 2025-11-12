@@ -7,10 +7,17 @@
 
 import UIKit
 
+protocol MatchViewDelegate: AnyObject {
+
+    func matchView(_ view: MatchView, wantsToSendMessageTo user: User)
+
+}
+
 class MatchView: UIView {
 
     // MARK: - Properties
 
+    weak var delegate: MatchViewDelegate?
     private let viewModel: MatchViewViewModel
 
     private let visualEffectView = UIVisualEffectView(
@@ -284,11 +291,7 @@ extension MatchView {
 extension MatchView {
 
     @objc func sendMessageButtonTapped(_ sender: UIButton) {
-        print(#function)
-    }
-
-    @objc func keepSwipingButtonTapped(_ sender: UIButton) {
-        print(#function)
+        delegate?.matchView(self, wantsToSendMessageTo: viewModel.matchedUser)
     }
 
     @objc func dismissView() {
