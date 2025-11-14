@@ -315,7 +315,16 @@ extension HomeController: HomeNavigationStackViewDelegate {
     }
 
     func showMessages() {
-        print(#function)
+        guard let currentUser = user else { return }
+
+        let controller = MessagesController(user: currentUser)
+        let navController = UINavigationController(
+            rootViewController: controller
+        )
+
+        navController.modalPresentationStyle = .fullScreen
+
+        present(navController, animated: true)
     }
 
 }
@@ -460,7 +469,7 @@ extension HomeController: MatchViewDelegate {
         animation.addCompletion { _ in
             view.removeFromSuperview()
 
-            print("DEBUG: Start conversation with \(user.fullname).")
+            self.showMessages()
         }
 
         animation.startAnimation()
