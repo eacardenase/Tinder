@@ -260,7 +260,7 @@ extension HomeController {
             case .success(let users):
                 self.viewModels = users.map { CardViewModel(user: $0) }
             case .failure(let error):
-                print(error.localizedDescription)
+                print(error)
             }
         }
     }
@@ -452,8 +452,6 @@ extension HomeController: AuthenticationDelegate {
 extension HomeController: MatchViewDelegate {
 
     func matchView(_ view: MatchView, wantsToSendMessageTo user: User) {
-        view.removeFromSuperview()
-
         let animation = UIViewPropertyAnimator(
             duration: 0.5,
             curve: .easeInOut
@@ -461,11 +459,11 @@ extension HomeController: MatchViewDelegate {
 
         animation.addCompletion { _ in
             view.removeFromSuperview()
+
+            print("DEBUG: Start conversation with \(user.fullname).")
         }
 
         animation.startAnimation()
-
-        print("DEBUG: Start conversation with \(user.fullname).")
     }
 
 }

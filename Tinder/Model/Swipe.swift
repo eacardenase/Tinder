@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Swipe: Codable {
+struct Swipe: Codable, Hashable {
 
     let userId: String
     let targetId: String

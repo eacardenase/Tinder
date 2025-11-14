@@ -93,7 +93,19 @@ struct UserService {
                     return try? document.data(as: User.self)
                 }
 
-                completion(.success(users))
+                SwipeService.fetchSwipes(for: user) { result in
+                    switch result {
+                    case .failure(let error):
+                        completion(.failure(error))
+                    case .success(let swipes):
+                        let filteredUsers = users.filter { user in
+                            !swipes.contains { $0.targetId == user.uid }
+                        }
+
+                        completion(.success(filteredUsers))
+                    }
+                }
+
             }
     }
 

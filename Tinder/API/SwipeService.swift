@@ -83,4 +83,39 @@ struct SwipeService {
             }
     }
 
+    static func fetchSwipes(
+        for user: User,
+        completion: @escaping (Result<[Swipe], NetworkingError>) -> Void
+    ) {
+        Firestore.firestore().collection("swipes")
+            .whereField("userId", isEqualTo: user.uid)
+            .getDocuments { snapshot, error in
+                if let error {
+                    completion(
+                        .failure(.serverError(error.localizedDescription))
+                    )
+
+                    return
+                }
+
+                guard let snapshot else {
+                    completion(
+                        .failure(
+                            .serverError(
+                                "Failed to get swipes for user with uid \(user.uid)"
+                            )
+                        )
+                    )
+
+                    return
+                }
+
+                let swipes = snapshot.documents.compactMap { document in
+                    return try? document.data(as: Swipe.self)
+                }
+
+                completion(.success(swipes))
+            }
+    }
+
 }
