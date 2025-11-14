@@ -12,6 +12,9 @@ class MessagesController: UITableViewController {
     // MARK: - Properties
 
     let user: User
+    let headerView = MessagesHeader(
+        frame: CGRect(x: 0, y: 0, width: 0, height: 200)
+    )
 
     // MARK: - Initializers
 
@@ -32,6 +35,7 @@ class MessagesController: UITableViewController {
 
         setupViews()
 
+        tableView.tableHeaderView = headerView
         tableView.register(
             UITableViewCell.self,
             forCellReuseIdentifier: NSStringFromClass(UITableViewCell.self)
@@ -86,7 +90,7 @@ extension MessagesController {
         view.addSubview(label)
 
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
+            label.topAnchor.constraint(equalTo: view.topAnchor),
             label.leadingAnchor.constraint(
                 equalTo: view.leadingAnchor,
                 constant: 16
