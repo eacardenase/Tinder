@@ -278,11 +278,26 @@ extension HomeController {
                 SwipeService.checkIfMatchExists(for: swipe) { result in
                     switch result {
                     case .success(let matchExists):
-                        if matchExists {
-                            self.presentMatchView(for: user)
-                        }
+                        guard let currentUser = self.user else { return }
 
-                        completion(nil)
+                        if matchExists {
+                            MatchService.saveMatch(
+                                for: currentUser,
+                                with: user
+                            ) { error in
+                                if let error {
+                                    completion(error)
+
+                                    return
+                                }
+
+                                self.presentMatchView(for: user)
+
+                                completion(nil)
+                            }
+                        } else {
+                            completion(nil)
+                        }
                     case .failure(let error):
                         completion(error)
                     }

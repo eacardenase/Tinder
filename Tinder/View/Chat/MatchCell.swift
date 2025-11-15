@@ -31,6 +31,7 @@ class MatchCell: UICollectionViewCell {
         label.textColor = .darkGray
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.numberOfLines = 2
 
         return label
     }()

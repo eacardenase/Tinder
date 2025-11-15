@@ -22,13 +22,36 @@ class MessagesHeader: UIView {
         return label
     }()
 
-    private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
+    private let collectionViewLayout: UICollectionViewLayout = {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .absolute(80),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .absolute(90),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
+
+        let section = NSCollectionLayoutSection(group: group)
+        let config = UICollectionViewCompositionalLayoutConfiguration()
+        config.scrollDirection = .horizontal
+
+        return UICollectionViewCompositionalLayout(
+            section: section,
+            configuration: config
+        )
+    }()
+
+    private lazy var collectionView: UICollectionView = {
         let collection = UICollectionView(
             frame: .zero,
-            collectionViewLayout: layout
+            collectionViewLayout: collectionViewLayout
         )
 
         collection.translatesAutoresizingMaskIntoConstraints = false
@@ -131,19 +154,5 @@ extension MessagesHeader: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegate
 
 extension MessagesHeader: UICollectionViewDelegate {
-
-}
-
-// MARK: - UICollectionViewDelegateFlowLayout
-
-extension MessagesHeader: UICollectionViewDelegateFlowLayout {
-
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        return CGSize(width: 80, height: 108)
-    }
 
 }
