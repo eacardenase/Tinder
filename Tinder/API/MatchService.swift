@@ -39,18 +39,50 @@ struct MatchService {
                 .collection("matches_messages")
                 .document(currentUser.uid)
                 .collection("matches")
-                .addDocument(from: currentUserMatch)
+                .addDocument(from: matchedUserMatch)
 
             try Firestore.firestore()
                 .collection("matches_messages")
                 .document(matchedUser.uid)
                 .collection("matches")
-                .addDocument(from: matchedUserMatch)
+                .addDocument(from: currentUserMatch)
 
             completion(nil)
         } catch {
             completion(.serverError(error.localizedDescription))
         }
+    }
+
+    static func fetchMatches(
+        for user: User,
+        completion: @escaping (Result<[Match], NetworkingError>) -> Void
+    ) {
+        Firestore.firestore().collection("matches_messages")
+            .document(user.uid)
+            .collection("matches")
+            .getDocuments { snapshot, error in
+                if let error {
+                    completion(
+                        .failure(.serverError(error.localizedDescription))
+                    )
+
+                    return
+                }
+
+                guard let snapshot else {
+                    completion(
+                        .failure(.serverError("Failed to get matches."))
+                    )
+
+                    return
+                }
+
+                let matches = snapshot.documents.compactMap {
+                    try? $0.data(as: Match.self)
+                }
+
+                completion(.success(matches))
+            }
     }
 
 }

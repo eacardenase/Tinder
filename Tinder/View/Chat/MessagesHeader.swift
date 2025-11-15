@@ -11,6 +11,12 @@ class MessagesHeader: UIView {
 
     // MARK: - Properties
 
+    var matches = [Match]() {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+
     private let newMatchesLabel: UILabel = {
         let label = UILabel()
 
@@ -58,6 +64,7 @@ class MessagesHeader: UIView {
         collection.showsHorizontalScrollIndicator = false
         collection.dataSource = self
         collection.delegate = self
+        collection.bounces = false
         collection.register(
             MatchCell.self,
             forCellWithReuseIdentifier: NSStringFromClass(MatchCell.self)
@@ -114,8 +121,7 @@ extension MessagesHeader {
                 constant: -16
             ),
             collectionView.bottomAnchor.constraint(
-                equalTo: bottomAnchor,
-                constant: -16
+                equalTo: bottomAnchor
             ),
         ])
     }
@@ -130,7 +136,7 @@ extension MessagesHeader: UICollectionViewDataSource {
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        return 10
+        return matches.count
     }
 
     func collectionView(
@@ -145,6 +151,8 @@ extension MessagesHeader: UICollectionViewDataSource {
         else {
             fatalError("Could not initialize MatchCell.")
         }
+
+        cell.match = matches[indexPath.item]
 
         return cell
     }

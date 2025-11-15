@@ -11,10 +11,12 @@ class MatchCell: UICollectionViewCell {
 
     // MARK: - Properties
 
+    var match: Match? {
+        didSet { configure() }
+    }
+
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
-
-        imageView.image = UIImage(resource: .jane1)
 
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -27,11 +29,11 @@ class MatchCell: UICollectionViewCell {
     private let usernameLabel: UILabel = {
         let label = UILabel()
 
-        label.text = "Username"
         label.textColor = .darkGray
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 14, weight: .semibold)
         label.numberOfLines = 2
+        label.setContentHuggingPriority(.defaultHigh, for: .vertical)
 
         return label
     }()
@@ -93,6 +95,15 @@ extension MatchCell {
         ])
 
         profileImageView.layer.cornerRadius = imageViewHeightAnchor.constant / 2
+    }
+
+    private func configure() {
+        guard let match else { return }
+
+        let viewModel = MatchCellViewModel(match: match)
+
+        usernameLabel.text = viewModel.nameText
+        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
     }
 
 }

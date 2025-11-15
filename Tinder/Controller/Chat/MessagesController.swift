@@ -13,7 +13,7 @@ class MessagesController: UITableViewController {
 
     let user: User
     let headerView = MessagesHeader(
-        frame: CGRect(x: 0, y: 0, width: 0, height: 200)
+        frame: CGRect(x: 0, y: 0, width: 0, height: 180)
     )
 
     // MARK: - Initializers
@@ -33,6 +33,7 @@ class MessagesController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        fetchMatches()
         setupViews()
 
         tableView.tableHeaderView = headerView
@@ -138,6 +139,23 @@ extension MessagesController {
 
     @objc func leftButtonTapped(_ sender: UIBarButtonItem) {
         dismiss(animated: true)
+    }
+
+}
+
+// MARK: - API
+
+extension MessagesController {
+
+    private func fetchMatches() {
+        MatchService.fetchMatches(for: user) { result in
+            switch result {
+            case .success(let matches):
+                self.headerView.matches = matches
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 
 }
