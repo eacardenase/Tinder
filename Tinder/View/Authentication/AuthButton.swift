@@ -11,17 +11,15 @@ class AuthButton: UIButton {
 
     // MARK: - Initializers
 
-    init(withTitle title: String) {
-        super.init(frame: .zero)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
 
         translatesAutoresizingMaskIntoConstraints = false
         layer.cornerRadius = 8
         layer.borderWidth = 2
         layer.borderColor = UIColor(white: 1, alpha: 0.7).cgColor
         isEnabled = false
-        setTitle(title, for: .normal)
         setTitleColor(.white.withAlphaComponent(0.7), for: .normal)
-        titleLabel?.font = .boldSystemFont(ofSize: 16)
         backgroundColor = .white.withAlphaComponent(0.2)
     }
 

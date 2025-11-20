@@ -99,7 +99,10 @@ class RegistrationController: UIViewController {
     }
 
     private lazy var signUpButton: UIButton = {
-        let button = AuthButton(withTitle: "Sign Up")
+        let button = AuthButton(type: .system)
+
+        button.setTitle("Sign Up", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
 
         button.addTarget(
             self,

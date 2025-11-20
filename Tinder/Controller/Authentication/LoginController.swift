@@ -53,7 +53,10 @@ class LoginController: UIViewController {
     }()
 
     private lazy var loginButton: UIButton = {
-        let button = AuthButton(withTitle: "Log In")
+        let button = AuthButton(type: .system)
+
+        button.setTitle("Log In", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
 
         button.addTarget(
             self,
