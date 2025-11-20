@@ -36,6 +36,8 @@ class MessagesController: UITableViewController {
         fetchMatches()
         setupViews()
 
+        headerView.delegate = self
+
         tableView.tableHeaderView = headerView
         tableView.register(
             UITableViewCell.self,
@@ -156,6 +158,16 @@ extension MessagesController {
                 print(error)
             }
         }
+    }
+
+}
+
+// MARK: - MessagesHeaderDelegate
+
+extension MessagesController: MessagesHeaderDelegate {
+
+    func messagesHeader(_ header: MessagesHeader, wantsToChatWith user: User) {
+        print("DEBUG: Start chat with \(user.fullname)")
     }
 
 }

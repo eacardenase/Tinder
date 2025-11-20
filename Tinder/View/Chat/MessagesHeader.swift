@@ -7,9 +7,20 @@
 
 import UIKit
 
+protocol MessagesHeaderDelegate: AnyObject {
+
+    func messagesHeader(
+        _ header: MessagesHeader,
+        wantsToChatWith user: User
+    )
+
+}
+
 class MessagesHeader: UIView {
 
     // MARK: - Properties
+
+    weak var delegate: MessagesHeaderDelegate?
 
     var matches = [Match]() {
         didSet {
@@ -162,5 +173,24 @@ extension MessagesHeader: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegate
 
 extension MessagesHeader: UICollectionViewDelegate {
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
+        let match = matches[indexPath.item]
+
+        UserService.fetchUser(withId: match.profileUid) { result in
+            switch result {
+            case .success(let user):
+                self.delegate?.messagesHeader(
+                    self,
+                    wantsToChatWith: user
+                )
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
 
 }
