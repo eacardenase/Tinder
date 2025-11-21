@@ -178,7 +178,11 @@ extension LoginController {
             return
         }
 
+        showLoader()
+
         AuthService.logUserIn(withEmail: email, password: password) { error in
+            self.showLoader(false)
+
             if let error {
                 let alertController = UIAlertController(
                     title: "Error",

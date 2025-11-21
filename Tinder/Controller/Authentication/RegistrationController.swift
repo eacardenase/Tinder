@@ -212,6 +212,8 @@ extension RegistrationController {
             return
         }
 
+        showLoader()
+
         guard let profileImage else {
             let alertController = UIAlertController(
                 title: "Profile Photo",
@@ -236,6 +238,8 @@ extension RegistrationController {
         )
 
         AuthService.createUser(wih: credentials) { result in
+            self.showLoader(false)
+
             switch result {
             case .success:
                 self.delegate?.authenticationComplete()
