@@ -264,11 +264,17 @@ extension MatchView {
         )
 
         let animation = UIViewPropertyAnimator(duration: 1, curve: .easeInOut) {
+            [weak self] in
+
+            guard let self else { return }
+
             self.currentUserImageView.transform = .identity
             self.matchedUserImageView.transform = .identity
         }
 
-        animation.addCompletion { _ in
+        animation.addCompletion { [weak self] _ in
+            guard let self else { return }
+
             UIViewPropertyAnimator(duration: 1, dampingRatio: 0.8) {
                 self.sendMessageButton.transform = .identity
                 self.keepSwipingButton.transform = .identity
@@ -298,9 +304,16 @@ extension MatchView {
         let animation = UIViewPropertyAnimator(
             duration: 0.5,
             curve: .easeInOut
-        ) { self.alpha = 0 }
+        ) { [weak self] in
 
-        animation.addCompletion { _ in
+            guard let self else { return }
+
+            self.alpha = 0
+        }
+
+        animation.addCompletion { [weak self] _ in
+            guard let self else { return }
+
             self.removeFromSuperview()
         }
 

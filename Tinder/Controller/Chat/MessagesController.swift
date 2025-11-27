@@ -16,6 +16,8 @@ class MessagesController: UITableViewController {
         frame: CGRect(x: 0, y: 0, width: 0, height: 180)
     )
 
+    private var recentMessages = [Conversation]()
+
     // MARK: - Initializers
 
     init(user: User) {
@@ -35,13 +37,14 @@ class MessagesController: UITableViewController {
 
         fetchMatches()
         setupViews()
+        fetchConversations()
 
         headerView.delegate = self
 
         tableView.tableHeaderView = headerView
         tableView.register(
-            UITableViewCell.self,
-            forCellReuseIdentifier: NSStringFromClass(UITableViewCell.self)
+            ConversationCell.self,
+            forCellReuseIdentifier: NSStringFromClass(ConversationCell.self)
         )
     }
 
@@ -55,19 +58,24 @@ extension MessagesController {
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        return 4
+        return recentMessages.count
     }
 
     override func tableView(
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: NSStringFromClass(UITableViewCell.self),
-            for: indexPath
-        )
+        guard
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: NSStringFromClass(ConversationCell.self),
+                for: indexPath
+            ) as? ConversationCell
+        else {
+            fatalError("Could not create ConversationCell cell")
+        }
 
-        cell.textLabel?.text = "\(indexPath.row)"
+        cell.conversation = recentMessages[indexPath.row]
+        cell.selectionStyle = .none
 
         return cell
     }
@@ -107,6 +115,15 @@ extension MessagesController {
         return view
     }
 
+    override func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
+        let user = recentMessages[indexPath.row].user
+
+        showChatController(for: user)
+    }
+
 }
 
 // MARK: - Helpers
@@ -133,6 +150,12 @@ extension MessagesController {
         navigationItem.titleView = titleView
     }
 
+    private func showChatController(for user: User) {
+        let controller = ChatController(user: user)
+
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
 }
 
 // MARK: - Actions
@@ -150,12 +173,34 @@ extension MessagesController {
 extension MessagesController {
 
     private func fetchMatches() {
-        MatchService.fetchMatches(for: user) { result in
+        MatchService.fetchMatches(for: user) { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case .success(let matches):
                 self.headerView.matches = matches
             case .failure(let error):
                 print(error)
+            }
+        }
+    }
+
+    func fetchConversations() {
+        ChatService.fetchRecentMessages { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success(let recentMessages):
+                self.recentMessages = recentMessages.sorted(by: {
+                    $0.message.timestamp.dateValue()
+                        > $1.message.timestamp.dateValue()
+                })
+
+                self.tableView.reloadData()
+            case .failure(let error):
+                print(
+                    "DEBUG: Failed to fetch conversations with error: \(error.localizedDescription)"
+                )
             }
         }
     }
@@ -167,7 +212,7 @@ extension MessagesController {
 extension MessagesController: MessagesHeaderDelegate {
 
     func messagesHeader(_ header: MessagesHeader, wantsToChatWith user: User) {
-        print("DEBUG: Start chat with \(user.fullname)")
+        showChatController(for: user)
     }
 
 }

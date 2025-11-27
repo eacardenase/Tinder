@@ -180,7 +180,9 @@ extension MessagesHeader: UICollectionViewDelegate {
     ) {
         let match = matches[indexPath.item]
 
-        UserService.fetchUser(withId: match.profileUid) { result in
+        UserService.fetchUser(withId: match.profileUid) { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case .success(let user):
                 self.delegate?.messagesHeader(

@@ -230,7 +230,9 @@ extension CardView {
 
         animation.startAnimation()
 
-        animation.addCompletion { _ in
+        animation.addCompletion { [weak self] _ in
+            guard let self else { return }
+            
             if shouldDismissCard {
                 self.delegate?.cardView(self, didSwipeWith: direction)
             }

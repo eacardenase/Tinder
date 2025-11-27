@@ -103,7 +103,10 @@ extension SettingsHeader {
         for (index, imageURL) in viewModel.imageUrls.enumerated() {
 
             SDWebImageManager.shared.loadImage(with: imageURL, progress: nil) {
-                (image, _, _, _, _, _) in
+                [weak self] (image, _, _, _, _, _) in
+
+                guard let self else { return }
+
                 let button = self.buttons[index]
 
                 button.setImage(

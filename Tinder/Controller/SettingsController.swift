@@ -157,7 +157,9 @@ extension SettingsController: UIImagePickerControllerDelegate,
 
         button.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
 
-        dismiss(animated: true) {
+        dismiss(animated: true) { [weak self] in
+            guard let self else { return }
+
             self.uploadImage(image)
         }
     }
@@ -276,7 +278,11 @@ extension SettingsController {
 
         showLoader()
 
-        StorageService.upload(image, forUserId: currentUserId) { result in
+        StorageService.upload(image, forUserId: currentUserId) {
+            [weak self] result in
+
+            guard let self else { return }
+
             self.showLoader(false)
 
             switch result {
@@ -302,7 +308,9 @@ extension SettingsController: SettingsFooterDelegate {
         )
 
         let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
-        { _ in
+        { [weak self] _ in
+            guard let self else { return }
+
             self.dismiss(animated: true) {
                 self.delegate?.handleLogout()
             }

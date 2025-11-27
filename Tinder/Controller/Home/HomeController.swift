@@ -129,7 +129,9 @@ extension HomeController {
     }
 
     private func presentLoginController() {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+
             let loginController = LoginController()
             loginController.delegate = self
 
@@ -170,7 +172,9 @@ extension HomeController {
             nextCard?.alpha = 1.0
         }
 
-        animation.addCompletion { _ in
+        animation.addCompletion { [weak self] _ in
+            guard let self else { return }
+
             self.saveSwipeAndCheckForMatch(
                 for: topCard.viewModel.user,
                 with: direction
@@ -223,7 +227,9 @@ extension HomeController {
 extension HomeController {
 
     func authenticateUser() {
-        AuthService.verifyLogin { result in
+        AuthService.verifyLogin { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case .success(let user):
                 self.user = user
@@ -239,7 +245,9 @@ extension HomeController {
     func logout() {
         showLoader()
 
-        AuthService.logUserOut { error in
+        AuthService.logUserOut { [weak self] error in
+            guard let self else { return }
+
             self.showLoader(false)
 
             if let error {
@@ -255,7 +263,9 @@ extension HomeController {
     func fetchUsers() {
         guard let currentUser = user else { return }
 
-        UserService.fetchUsers(for: currentUser) { result in
+        UserService.fetchUsers(for: currentUser) { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case .success(let users):
                 self.viewModels = users.map { CardViewModel(user: $0) }
@@ -270,7 +280,11 @@ extension HomeController {
         with direction: SwipeDirection,
         completion: @escaping (NetworkingError?) -> Void
     ) {
-        SwipeService.saveSwipe(for: user, with: direction) { result in
+        SwipeService.saveSwipe(for: user, with: direction) {
+            [weak self] result in
+
+            guard let self else { return }
+
             switch result {
             case .success(let swipe):
                 guard direction == .right else { return }
@@ -352,11 +366,13 @@ extension HomeController: SettingsControllerDelegate {
         _ controller: SettingsController,
         wantsToUpdate user: User
     ) {
-        self.showLoader()
+        showLoader()
 
         controller.dismiss(animated: true) {
 
-            UserService.store(user) { result in
+            UserService.store(user) { [weak self] result in
+                guard let self else { return }
+
                 self.showLoader(false)
 
                 switch result {
@@ -388,8 +404,9 @@ extension HomeController: CardViewDelegate {
         saveSwipeAndCheckForMatch(
             for: topCard.viewModel.user,
             with: direction
-        ) {
-            error in
+        ) { [weak self] error in
+
+            guard let self else { return }
 
             if let error {
                 print(error)
@@ -444,7 +461,9 @@ extension HomeController: ProfileControllerDelegate {
         _ controller: ProfileController,
         wantsToSwipeTo direction: SwipeDirection
     ) {
-        controller.dismiss(animated: true) {
+        controller.dismiss(animated: true) { [weak self] in
+            guard let self else { return }
+
             self.performSwipe(withDirection: direction)
         }
     }
@@ -458,7 +477,9 @@ extension HomeController: AuthenticationDelegate {
     func authenticationComplete() {
         dismiss(animated: true)
 
-        AuthService.verifyLogin { result in
+        AuthService.verifyLogin { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case .success(let user):
                 self.user = user
@@ -481,7 +502,9 @@ extension HomeController: MatchViewDelegate {
             curve: .easeInOut
         ) { view.alpha = 0 }
 
-        animation.addCompletion { _ in
+        animation.addCompletion { [weak self] _ in
+            guard let self else { return }
+
             view.removeFromSuperview()
 
             self.showMessages()

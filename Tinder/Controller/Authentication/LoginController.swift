@@ -180,7 +180,11 @@ extension LoginController {
 
         showLoader()
 
-        AuthService.logUserIn(withEmail: email, password: password) { error in
+        AuthService.logUserIn(withEmail: email, password: password) {
+            [weak self] error in
+
+            guard let self else { return }
+
             self.showLoader(false)
 
             if let error {

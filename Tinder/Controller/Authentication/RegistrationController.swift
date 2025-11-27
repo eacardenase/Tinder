@@ -237,7 +237,9 @@ extension RegistrationController {
             profileImage: profileImage
         )
 
-        AuthService.createUser(wih: credentials) { result in
+        AuthService.createUser(wih: credentials) { [weak self] result in
+            guard let self else { return }
+
             self.showLoader(false)
 
             switch result {
