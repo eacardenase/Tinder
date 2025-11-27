@@ -352,6 +352,7 @@ extension HomeController: HomeNavigationStackViewDelegate {
         )
 
         navController.modalPresentationStyle = .fullScreen
+        navController.navigationBar.tintColor = .systemPink
 
         present(navController, animated: true)
     }

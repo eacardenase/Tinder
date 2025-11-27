@@ -148,6 +148,7 @@ extension MessagesController {
 
         navigationItem.leftBarButtonItem = leftButton
         navigationItem.titleView = titleView
+        navigationItem.backButtonTitle = ""
     }
 
     private func showChatController(for user: User) {
