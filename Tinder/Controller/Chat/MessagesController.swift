@@ -42,9 +42,14 @@ class MessagesController: UITableViewController {
         headerView.delegate = self
 
         tableView.tableHeaderView = headerView
+        tableView.separatorStyle = .none
         tableView.register(
             ConversationCell.self,
             forCellReuseIdentifier: NSStringFromClass(ConversationCell.self)
+        )
+        tableView.register(
+            NothingFoundCell.self,
+            forCellReuseIdentifier: NSStringFromClass(NothingFoundCell.self)
         )
     }
 
@@ -58,7 +63,7 @@ extension MessagesController {
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        return recentMessages.count
+        return !recentMessages.isEmpty ? recentMessages.count : 1
     }
 
     override func tableView(
@@ -70,8 +75,15 @@ extension MessagesController {
                 withIdentifier: NSStringFromClass(ConversationCell.self),
                 for: indexPath
             ) as? ConversationCell
-        else {
-            fatalError("Could not create ConversationCell cell")
+        else { fatalError("Could not create ConversationCell cell") }
+
+        if recentMessages.isEmpty {
+            let nothingFoundCell = tableView.dequeueReusableCell(
+                withIdentifier: NSStringFromClass(NothingFoundCell.self),
+                for: indexPath
+            )
+
+            return nothingFoundCell
         }
 
         cell.conversation = recentMessages[indexPath.row]
@@ -113,6 +125,13 @@ extension MessagesController {
         ])
 
         return view
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
+        willSelectRowAt indexPath: IndexPath
+    ) -> IndexPath? {
+        return !recentMessages.isEmpty ? indexPath : nil
     }
 
     override func tableView(
