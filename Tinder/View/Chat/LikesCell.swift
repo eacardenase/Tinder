@@ -1,38 +1,32 @@
 //
-//  MatchCell.swift
+//  LikesMatchCell.swift
 //  Tinder
 //
-//  Created by Edwin Cardenas on 11/14/25.
+//  Created by Edwin Cardenas on 12/6/25.
 //
 
 import UIKit
 
-class MatchCell: UICollectionViewCell {
+class LikesCell: UICollectionViewCell {
 
     // MARK: - Properties
-
-    var match: Match? {
-        didSet { configure() }
-    }
 
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
 
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.borderWidth = 2
-        imageView.layer.borderColor = UIColor.white.cgColor
+        imageView.layer.borderWidth = 3
+        imageView.layer.borderColor = UIColor.systemYellow.cgColor
 
         return imageView
     }()
 
-    private let usernameLabel: UILabel = {
+    private let likesLabel: UILabel = {
         let label = UILabel()
 
+        label.text = "Likes"
         label.textColor = .darkGray
         label.textAlignment = .center
         label.font = .preferredFont(forTextStyle: .headline)
-        label.numberOfLines = 2
         label.setContentHuggingPriority(.defaultHigh, for: .vertical)
 
         return label
@@ -52,12 +46,14 @@ class MatchCell: UICollectionViewCell {
 
 }
 
-extension MatchCell {
+// MARK: - Helpers
+
+extension LikesCell {
 
     private func setupViews() {
         let stackView = UIStackView(arrangedSubviews: [
             profileImageView,
-            usernameLabel,
+            likesLabel,
         ])
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -95,15 +91,6 @@ extension MatchCell {
         ])
 
         profileImageView.layer.cornerRadius = imageViewHeightAnchor.constant / 2
-    }
-
-    private func configure() {
-        guard let match else { return }
-
-        let viewModel = MatchCellViewModel(match: match)
-
-        usernameLabel.text = viewModel.nameText
-        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
     }
 
 }

@@ -80,6 +80,10 @@ class MessagesHeader: UIView {
             MatchCell.self,
             forCellWithReuseIdentifier: NSStringFromClass(MatchCell.self)
         )
+        collection.register(
+            LikesCell.self,
+            forCellWithReuseIdentifier: NSStringFromClass(LikesCell.self)
+        )
 
         return collection
     }()
@@ -143,10 +147,19 @@ extension MessagesHeader {
 
 extension MessagesHeader: UICollectionViewDataSource {
 
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        2
+    }
+
     func collectionView(
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
+
+        if section == 0 {
+            return 1
+        }
+
         return matches.count
     }
 
@@ -154,18 +167,27 @@ extension MessagesHeader: UICollectionViewDataSource {
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        guard
+        if indexPath.section == 0 {
             let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: NSStringFromClass(MatchCell.self),
+                withReuseIdentifier: NSStringFromClass(LikesCell.self),
                 for: indexPath
-            ) as? MatchCell
-        else {
-            fatalError("Could not initialize MatchCell.")
+            )
+
+            return cell
+        } else {
+            guard
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: NSStringFromClass(MatchCell.self),
+                    for: indexPath
+                ) as? MatchCell
+            else {
+                fatalError("Could not initialize MatchCell.")
+            }
+
+            cell.match = matches[indexPath.item]
+
+            return cell
         }
-
-        cell.match = matches[indexPath.item]
-
-        return cell
     }
 
 }
