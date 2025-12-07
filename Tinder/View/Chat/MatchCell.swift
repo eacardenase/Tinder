@@ -20,8 +20,6 @@ class MatchCell: UICollectionViewCell {
 
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.layer.borderWidth = 2
-        imageView.layer.borderColor = UIColor.white.cgColor
 
         return imageView
     }()
@@ -30,7 +28,6 @@ class MatchCell: UICollectionViewCell {
         let label = UILabel()
 
         label.textColor = .darkGray
-        label.textAlignment = .center
         label.font = .preferredFont(forTextStyle: .headline)
         label.numberOfLines = 2
         label.setContentHuggingPriority(.defaultHigh, for: .vertical)
@@ -51,6 +48,8 @@ class MatchCell: UICollectionViewCell {
     }
 
 }
+
+// MARK: - Helpers
 
 extension MatchCell {
 

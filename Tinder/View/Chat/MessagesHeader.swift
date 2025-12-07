@@ -222,6 +222,26 @@ extension MessagesHeader: UICollectionViewDelegate {
 
     func collectionView(
         _ collectionView: UICollectionView,
+        shouldSelectItemAt indexPath: IndexPath
+    ) -> Bool {
+        guard
+            let section =
+                MessagesHeaderSections(rawValue: indexPath.section)
+        else {
+            fatalError(
+                "Could not instantiate MessagesHeaderSections from raw value."
+            )
+        }
+
+        if case .likes = section {
+            return false
+        }
+
+        return true
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
         didSelectItemAt indexPath: IndexPath
     ) {
         let match = matches[indexPath.item]
