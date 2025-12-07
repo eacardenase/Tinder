@@ -16,6 +16,13 @@ protocol MessagesHeaderDelegate: AnyObject {
 
 }
 
+enum MessagesHeaderSections: Int, CaseIterable {
+
+    case likes
+    case matches
+
+}
+
 class MessagesHeader: UIView {
 
     // MARK: - Properties
@@ -148,33 +155,50 @@ extension MessagesHeader {
 extension MessagesHeader: UICollectionViewDataSource {
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        2
+        return MessagesHeaderSections.allCases.count
     }
 
     func collectionView(
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-
-        if section == 0 {
-            return 1
+        guard
+            let headerSection =
+                MessagesHeaderSections(rawValue: section)
+        else {
+            fatalError(
+                "Could not instantiate MessagesHeaderSections from raw value."
+            )
         }
 
-        return matches.count
+        switch headerSection {
+        case .likes: return 1
+        case .matches: return matches.count
+        }
     }
 
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        if indexPath.section == 0 {
+        guard
+            let section =
+                MessagesHeaderSections(rawValue: indexPath.section)
+        else {
+            fatalError(
+                "Could not instantiate MessagesHeaderSections from raw value."
+            )
+        }
+
+        switch section {
+        case .likes:
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: NSStringFromClass(LikesCell.self),
                 for: indexPath
             )
 
             return cell
-        } else {
+        case .matches:
             guard
                 let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: NSStringFromClass(MatchCell.self),
