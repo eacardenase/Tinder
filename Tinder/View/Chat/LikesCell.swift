@@ -59,7 +59,6 @@ class LikesCell: UICollectionViewCell {
     // MARK: - View Lifecycle
 
     override func layoutSubviews() {
-        containerView.layer.cornerRadius = containerView.frame.height / 2
         profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
     }
 
@@ -105,11 +104,15 @@ extension LikesCell {
 
         contentView.addSubview(stackView)
 
+        let containerViewHeightAnchor = containerView.heightAnchor.constraint(
+            equalToConstant: 80
+        )
+
         // profileImageView
         NSLayoutConstraint.activate([
-            containerView.heightAnchor.constraint(equalToConstant: 80),
+            containerViewHeightAnchor,
             containerView.widthAnchor.constraint(
-                equalTo: containerView.heightAnchor
+                equalToConstant: containerViewHeightAnchor.constant
             ),
         ])
 
@@ -126,6 +129,9 @@ extension LikesCell {
                 equalTo: contentView.bottomAnchor
             ),
         ])
+
+        containerView.layer.cornerRadius =
+            containerViewHeightAnchor.constant / 2
     }
 
 }
