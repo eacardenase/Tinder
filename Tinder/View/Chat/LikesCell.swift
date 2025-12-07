@@ -11,11 +11,23 @@ class LikesCell: UICollectionViewCell {
 
     // MARK: - Properties
 
+    private let containerView: UIView = {
+        let view = UIView()
+
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.borderWidth = 3
+        view.layer.borderColor = UIColor.systemYellow.cgColor
+        view.clipsToBounds = true
+
+        return view
+    }()
+
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
 
-        imageView.layer.borderWidth = 3
-        imageView.layer.borderColor = UIColor.systemYellow.cgColor
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.backgroundColor = .systemYellow.withAlphaComponent(0.3)
+        imageView.contentMode = .scaleAspectFill
 
         return imageView
     }()
@@ -44,6 +56,13 @@ class LikesCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - View Lifecycle
+
+    override func layoutSubviews() {
+        containerView.layer.cornerRadius = containerView.frame.height / 2
+        profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
+    }
+
 }
 
 // MARK: - Helpers
@@ -51,8 +70,30 @@ class LikesCell: UICollectionViewCell {
 extension LikesCell {
 
     private func setupViews() {
+        containerView.addSubview(profileImageView)
+
+        // containerView
+        NSLayoutConstraint.activate([
+            profileImageView.topAnchor.constraint(
+                equalTo: containerView.topAnchor,
+                constant: 6
+            ),
+            profileImageView.leadingAnchor.constraint(
+                equalTo: containerView.leadingAnchor,
+                constant: 6
+            ),
+            profileImageView.trailingAnchor.constraint(
+                equalTo: containerView.trailingAnchor,
+                constant: -6
+            ),
+            profileImageView.bottomAnchor.constraint(
+                equalTo: containerView.bottomAnchor,
+                constant: -6
+            ),
+        ])
+
         let stackView = UIStackView(arrangedSubviews: [
-            profileImageView,
+            containerView,
             likesLabel,
         ])
 
@@ -64,15 +105,11 @@ extension LikesCell {
 
         contentView.addSubview(stackView)
 
-        let imageViewHeightAnchor = profileImageView.heightAnchor.constraint(
-            equalToConstant: 80
-        )
-
         // profileImageView
         NSLayoutConstraint.activate([
-            imageViewHeightAnchor,
-            profileImageView.widthAnchor.constraint(
-                equalToConstant: imageViewHeightAnchor.constant
+            containerView.heightAnchor.constraint(equalToConstant: 80),
+            containerView.widthAnchor.constraint(
+                equalTo: containerView.heightAnchor
             ),
         ])
 
@@ -89,8 +126,6 @@ extension LikesCell {
                 equalTo: contentView.bottomAnchor
             ),
         ])
-
-        profileImageView.layer.cornerRadius = imageViewHeightAnchor.constant / 2
     }
 
 }
