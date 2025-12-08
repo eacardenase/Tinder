@@ -14,11 +14,12 @@ struct SwipeService {
     static func saveSwipe(
         for user: User,
         with direction: SwipeDirection,
+        currentUser: User,
         completion: @escaping (Result<Swipe, NetworkingError>) -> Void
     ) {
         guard
             let currentUserId = AuthService.currentUser?.uid,
-            let profileImageUrl = user.imageUrls.first
+            let profileImageUrl = currentUser.imageUrls.first
         else { return }
 
         let swipe = Swipe(

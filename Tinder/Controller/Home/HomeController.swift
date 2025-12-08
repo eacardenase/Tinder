@@ -146,7 +146,7 @@ extension HomeController {
     }
 
     private func performSwipe(withDirection direction: SwipeDirection) {
-        guard let topCard = topCardView else { return }
+        guard let topCard = topCardView, let currentUser = user else { return }
 
         previousCard = cardViews.popLast()
 
@@ -280,7 +280,13 @@ extension HomeController {
         with direction: SwipeDirection,
         completion: @escaping (NetworkingError?) -> Void
     ) {
-        SwipeService.saveSwipe(for: user, with: direction) {
+        guard let currentUser = self.user else { return }
+
+        SwipeService.saveSwipe(
+            for: user,
+            with: direction,
+            currentUser: currentUser
+        ) {
             [weak self] result in
 
             guard let self else { return }
@@ -400,7 +406,7 @@ extension HomeController: SettingsControllerDelegate {
 extension HomeController: CardViewDelegate {
 
     func cardView(_ view: CardView, didSwipeWith direction: SwipeDirection) {
-        guard let topCard = topCardView else { return }
+        guard let topCard = topCardView, let currentUser = user else { return }
 
         saveSwipeAndCheckForMatch(
             for: topCard.viewModel.user,
