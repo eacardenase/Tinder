@@ -36,12 +36,31 @@ class LikesCell: UICollectionViewCell {
         return imageView
     }()
 
+    private let likesContainer: UIView = {
+        let container = UIView()
+
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.backgroundColor = .systemYellow
+
+        return container
+    }()
+
     private let likesLabel: UILabel = {
         let label = UILabel()
 
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .preferredFont(forTextStyle: .body)
         label.textColor = .white
+        label.adjustsFontSizeToFitWidth = true
+
+        guard
+            let fontDescriptor: UIFontDescriptor = .preferredFontDescriptor(
+                withTextStyle: .body
+            ).withSymbolicTraits(.traitBold)
+        else {
+            fatalError("Could not instantiate font descriptor with bold trait.")
+        }
+
+        label.font = UIFont(descriptor: fontDescriptor, size: 0)
 
         return label
     }()
@@ -74,6 +93,7 @@ class LikesCell: UICollectionViewCell {
 
     override func layoutSubviews() {
         profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
+        likesContainer.layer.cornerRadius = likesContainer.frame.height / 2
     }
 
 }
@@ -83,36 +103,58 @@ class LikesCell: UICollectionViewCell {
 extension LikesCell {
 
     private func setupViews() {
+        likesContainer.addSubview(likesLabel)
+
+        // likesContainer
+        NSLayoutConstraint.activate([
+            likesLabel.centerXAnchor.constraint(
+                equalTo: likesContainer.centerXAnchor
+            ),
+            likesLabel.centerYAnchor.constraint(
+                equalTo: likesContainer.centerYAnchor
+            ),
+        ])
+
         containerView.addSubview(profileImageView)
-        containerView.addSubview(likesLabel)
+        containerView.addSubview(likesContainer)
 
         // containerView
         NSLayoutConstraint.activate([
             profileImageView.topAnchor.constraint(
                 equalTo: containerView.topAnchor,
-                constant: 6
+                constant: 7
             ),
             profileImageView.leadingAnchor.constraint(
                 equalTo: containerView.leadingAnchor,
-                constant: 6
+                constant: 7
             ),
             profileImageView.trailingAnchor.constraint(
                 equalTo: containerView.trailingAnchor,
-                constant: -6
+                constant: -7
             ),
             profileImageView.bottomAnchor.constraint(
                 equalTo: containerView.bottomAnchor,
-                constant: -6
+                constant: -7
             ),
         ])
 
         // likesLabel
         NSLayoutConstraint.activate([
-            likesLabel.centerXAnchor.constraint(
-                equalTo: containerView.centerXAnchor
+            likesContainer.topAnchor.constraint(
+                equalTo: containerView.topAnchor,
+                constant: 20
             ),
-            likesLabel.centerYAnchor.constraint(
-                equalTo: containerView.centerYAnchor
+            likesContainer.leadingAnchor.constraint(
+                equalTo: containerView.leadingAnchor,
+                constant: 20
+            ),
+            likesContainer.trailingAnchor.constraint(
+                equalTo: containerView.trailingAnchor,
+                constant: -20
+            ),
+            likesContainer.bottomAnchor.constraint(
+                equalTo: containerView.bottomAnchor,
+                constant: -20
             ),
         ])
 
@@ -165,6 +207,7 @@ extension LikesCell {
         let viewModel = LikesCellViewModel(count: likesCount)
 
         likesLabel.text = viewModel.likesCountText
+        titleLabel.text = viewModel.titleText
     }
 
 }

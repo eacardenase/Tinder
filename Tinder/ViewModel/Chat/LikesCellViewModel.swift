@@ -17,6 +17,10 @@ struct LikesCellViewModel {
         return count > 99 ? "99+" : "\(count)"
     }
 
+    var titleText: String {
+        return count == 1 ? "Like" : "Likes"
+    }
+
     // MARK: - Initializers
 
     init(count: Int) {
