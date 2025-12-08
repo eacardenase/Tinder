@@ -24,13 +24,23 @@ class MatchCell: UICollectionViewCell {
         return imageView
     }()
 
+    private let bubbleView: UIView = {
+        let view = UIView()
+
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .systemPink
+        view.layer.borderWidth = 2.5
+        view.layer.borderColor = UIColor.white.cgColor
+
+        return view
+    }()
+
     private let usernameLabel: UILabel = {
         let label = UILabel()
 
         label.textColor = .darkGray
         label.font = .preferredFont(forTextStyle: .headline)
-        label.numberOfLines = 2
-        label.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        label.numberOfLines = 1
 
         return label
     }()
@@ -93,7 +103,26 @@ extension MatchCell {
             ),
         ])
 
+        contentView.addSubview(bubbleView)
+
+        let bubbleViewHeightAnchor = bubbleView.heightAnchor.constraint(
+            equalToConstant: 16
+        )
+
+        // bubbleView
+        NSLayoutConstraint.activate([
+            bubbleViewHeightAnchor,
+            bubbleView.widthAnchor.constraint(equalTo: bubbleView.heightAnchor),
+            bubbleView.centerYAnchor.constraint(
+                equalTo: profileImageView.centerYAnchor
+            ),
+            bubbleView.centerXAnchor.constraint(
+                equalTo: profileImageView.trailingAnchor
+            ),
+        ])
+
         profileImageView.layer.cornerRadius = imageViewHeightAnchor.constant / 2
+        bubbleView.layer.cornerRadius = bubbleViewHeightAnchor.constant / 2
     }
 
     private func configure() {

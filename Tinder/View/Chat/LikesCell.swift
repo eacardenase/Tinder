@@ -95,6 +95,8 @@ class LikesCell: UICollectionViewCell {
     // MARK: - View Lifecycle
 
     override func layoutSubviews() {
+        super.layoutSubviews()
+
         profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
         likesContainer.layer.cornerRadius = likesContainer.frame.height / 2
     }
@@ -213,24 +215,27 @@ extension LikesCell {
         guard let imageUrl = URL(string: viewModel.profileImageUrl)
         else { return }
 
-        profileImageView.sd_setImage(with: imageUrl) { image, _, _, _ in
-            guard let inputImage = image else { return }
+        UIViewPropertyAnimator(duration: 0.3, curve: .easeInOut) {
+            [weak self] in
 
-            let filter = CIFilter.gaussianBlur()
-            filter.radius = 50
-            filter.inputImage = CIImage(image: inputImage)
+            guard let self else { return }
 
-            guard let output = filter.outputImage else { return }
+            self.profileImageView.sd_setImage(with: imageUrl) {
+                (image, _, _, _) in
 
-            DispatchQueue.main.async { [weak self] in
-                UIViewPropertyAnimator(duration: 0.3, curve: .easeInOut) {
-                    guard let self = self else { return }
+                guard let inputImage = image else { return }
 
+                let filter = CIFilter.gaussianBlur()
+                filter.radius = 50
+                filter.inputImage = CIImage(image: inputImage)
+
+                guard let output = filter.outputImage else { return }
+
+                DispatchQueue.main.async {
                     self.profileImageView.image = UIImage(ciImage: output)
-                }.startAnimation()
+                }
             }
-        }
-
+        }.startAnimation()
     }
 
 }
