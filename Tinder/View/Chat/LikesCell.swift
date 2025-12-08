@@ -30,11 +30,21 @@ class LikesCell: UICollectionViewCell {
         let imageView = UIImageView()
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.backgroundColor = .systemYellow.withAlphaComponent(0.3)
+        imageView.backgroundColor = .systemYellow
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
 
         return imageView
+    }()
+
+    let visualEffectView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .light)
+
+        let visualEffect = UIVisualEffectView(effect: blurEffect)
+        visualEffect.translatesAutoresizingMaskIntoConstraints = false
+        visualEffect.clipsToBounds = true
+
+        return visualEffect
     }()
 
     private let likesContainer: UIView = {
@@ -94,6 +104,8 @@ class LikesCell: UICollectionViewCell {
 
     override func layoutSubviews() {
         profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
+        visualEffectView.layer.cornerRadius = visualEffectView.frame.height / 2
+
         likesContainer.layer.cornerRadius = likesContainer.frame.height / 2
     }
 
@@ -117,9 +129,10 @@ extension LikesCell {
         ])
 
         containerView.addSubview(profileImageView)
+        containerView.addSubview(visualEffectView)
         containerView.addSubview(likesContainer)
 
-        // containerView
+        // profileImageView
         NSLayoutConstraint.activate([
             profileImageView.topAnchor.constraint(
                 equalTo: containerView.topAnchor,
@@ -136,6 +149,22 @@ extension LikesCell {
             profileImageView.bottomAnchor.constraint(
                 equalTo: containerView.bottomAnchor,
                 constant: -7
+            ),
+        ])
+
+        // visualEffectView
+        NSLayoutConstraint.activate([
+            visualEffectView.topAnchor.constraint(
+                equalTo: profileImageView.topAnchor
+            ),
+            visualEffectView.leadingAnchor.constraint(
+                equalTo: profileImageView.leadingAnchor
+            ),
+            visualEffectView.trailingAnchor.constraint(
+                equalTo: profileImageView.trailingAnchor
+            ),
+            visualEffectView.bottomAnchor.constraint(
+                equalTo: profileImageView.bottomAnchor
             ),
         ])
 
@@ -212,6 +241,7 @@ extension LikesCell {
         else { return }
 
         profileImageView.sd_setImage(with: imageUrl)
+
     }
 
 }
