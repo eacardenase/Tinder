@@ -11,6 +11,10 @@ class LikesCell: UICollectionViewCell {
 
     // MARK: - Properties
 
+    var likesCount: Int? {
+        didSet { configure() }
+    }
+
     private let containerView: UIView = {
         let view = UIView()
 
@@ -33,6 +37,16 @@ class LikesCell: UICollectionViewCell {
     }()
 
     private let likesLabel: UILabel = {
+        let label = UILabel()
+
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .preferredFont(forTextStyle: .body)
+        label.textColor = .white
+
+        return label
+    }()
+
+    private let titleLabel: UILabel = {
         let label = UILabel()
 
         label.text = "Likes"
@@ -70,6 +84,7 @@ extension LikesCell {
 
     private func setupViews() {
         containerView.addSubview(profileImageView)
+        containerView.addSubview(likesLabel)
 
         // containerView
         NSLayoutConstraint.activate([
@@ -91,9 +106,19 @@ extension LikesCell {
             ),
         ])
 
+        // likesLabel
+        NSLayoutConstraint.activate([
+            likesLabel.centerXAnchor.constraint(
+                equalTo: containerView.centerXAnchor
+            ),
+            likesLabel.centerYAnchor.constraint(
+                equalTo: containerView.centerYAnchor
+            ),
+        ])
+
         let stackView = UIStackView(arrangedSubviews: [
             containerView,
-            likesLabel,
+            titleLabel,
         ])
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -132,6 +157,14 @@ extension LikesCell {
 
         containerView.layer.cornerRadius =
             containerViewHeightAnchor.constant / 2
+    }
+
+    private func configure() {
+        guard let likesCount = likesCount else { return }
+
+        let viewModel = LikesCellViewModel(count: likesCount)
+
+        likesLabel.text = viewModel.likesCountText
     }
 
 }

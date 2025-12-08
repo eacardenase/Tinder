@@ -29,6 +29,12 @@ class MessagesHeader: UIView {
 
     weak var delegate: MessagesHeaderDelegate?
 
+    var likesCount: Int? {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+
     var matches = [Match]() {
         didSet {
             collectionView.reloadData()
@@ -192,10 +198,16 @@ extension MessagesHeader: UICollectionViewDataSource {
 
         switch section {
         case .likes:
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: NSStringFromClass(LikesCell.self),
-                for: indexPath
-            )
+            guard
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: NSStringFromClass(LikesCell.self),
+                    for: indexPath
+                ) as? LikesCell
+            else {
+                fatalError("Could not initialize LikesCell.")
+            }
+
+            cell.likesCount = likesCount
 
             return cell
         case .matches:

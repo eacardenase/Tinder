@@ -118,4 +118,31 @@ struct SwipeService {
             }
     }
 
+    static func fetchLikesCount(
+        for user: User,
+        completion: @escaping (Result<Int, NetworkingError>) -> Void
+    ) {
+        let query = Firestore.firestore().collection("swipes")
+            .whereField("targetId", isEqualTo: user.uid)
+            .whereField("direction", isEqualTo: 1)
+
+        query.count.getAggregation(source: .server) { snapshot, error in
+            if let error {
+                completion(.failure(.serverError(error.localizedDescription)))
+
+                return
+            }
+
+            guard let snapshot else {
+                completion(
+                    .failure(.serverError("There are no items to fetch"))
+                )
+
+                return
+            }
+
+            completion(.success(snapshot.count.intValue))
+        }
+    }
+
 }

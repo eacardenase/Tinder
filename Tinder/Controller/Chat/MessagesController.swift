@@ -35,6 +35,7 @@ class MessagesController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        fetchLikes()
         fetchMatches()
         setupViews()
         fetchConversations()
@@ -199,6 +200,19 @@ extension MessagesController {
             switch result {
             case .success(let matches):
                 self.headerView.matches = matches
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+
+    private func fetchLikes() {
+        SwipeService.fetchLikesCount(for: user) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success(let count):
+                self.headerView.likesCount = count
             case .failure(let error):
                 print(error)
             }
