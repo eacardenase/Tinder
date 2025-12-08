@@ -5,6 +5,8 @@
 //  Created by Edwin Cardenas on 12/6/25.
 //
 
+import CoreImage
+import CoreImage.CIFilterBuiltins
 import UIKit
 
 class LikesCell: UICollectionViewCell {
@@ -30,21 +32,11 @@ class LikesCell: UICollectionViewCell {
         let imageView = UIImageView()
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.backgroundColor = .systemYellow
+        imageView.backgroundColor = .systemYellow.withAlphaComponent(0.3)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
 
         return imageView
-    }()
-
-    let visualEffectView: UIVisualEffectView = {
-        let blurEffect = UIBlurEffect(style: .light)
-
-        let visualEffect = UIVisualEffectView(effect: blurEffect)
-        visualEffect.translatesAutoresizingMaskIntoConstraints = false
-        visualEffect.clipsToBounds = true
-
-        return visualEffect
     }()
 
     private let likesContainer: UIView = {
@@ -104,8 +96,6 @@ class LikesCell: UICollectionViewCell {
 
     override func layoutSubviews() {
         profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
-        visualEffectView.layer.cornerRadius = visualEffectView.frame.height / 2
-
         likesContainer.layer.cornerRadius = likesContainer.frame.height / 2
     }
 
@@ -129,7 +119,6 @@ extension LikesCell {
         ])
 
         containerView.addSubview(profileImageView)
-        containerView.addSubview(visualEffectView)
         containerView.addSubview(likesContainer)
 
         // profileImageView
@@ -149,22 +138,6 @@ extension LikesCell {
             profileImageView.bottomAnchor.constraint(
                 equalTo: containerView.bottomAnchor,
                 constant: -7
-            ),
-        ])
-
-        // visualEffectView
-        NSLayoutConstraint.activate([
-            visualEffectView.topAnchor.constraint(
-                equalTo: profileImageView.topAnchor
-            ),
-            visualEffectView.leadingAnchor.constraint(
-                equalTo: profileImageView.leadingAnchor
-            ),
-            visualEffectView.trailingAnchor.constraint(
-                equalTo: profileImageView.trailingAnchor
-            ),
-            visualEffectView.bottomAnchor.constraint(
-                equalTo: profileImageView.bottomAnchor
             ),
         ])
 
@@ -240,7 +213,23 @@ extension LikesCell {
         guard let imageUrl = URL(string: viewModel.profileImageUrl)
         else { return }
 
-        profileImageView.sd_setImage(with: imageUrl)
+        profileImageView.sd_setImage(with: imageUrl) { image, _, _, _ in
+            guard let inputImage = image else { return }
+
+            let filter = CIFilter.gaussianBlur()
+            filter.radius = 50
+            filter.inputImage = CIImage(image: inputImage)
+
+            guard let output = filter.outputImage else { return }
+
+            DispatchQueue.main.async { [weak self] in
+                UIViewPropertyAnimator(duration: 0.3, curve: .easeInOut) {
+                    guard let self = self else { return }
+
+                    self.profileImageView.image = UIImage(ciImage: output)
+                }.startAnimation()
+            }
+        }
 
     }
 
