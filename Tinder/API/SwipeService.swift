@@ -16,11 +16,15 @@ struct SwipeService {
         with direction: SwipeDirection,
         completion: @escaping (Result<Swipe, NetworkingError>) -> Void
     ) {
-        guard let currentUserId = AuthService.currentUser?.uid else { return }
+        guard
+            let currentUserId = AuthService.currentUser?.uid,
+            let profileImageUrl = user.imageUrls.first
+        else { return }
 
         let swipe = Swipe(
             userId: currentUserId,
             targetId: user.uid,
+            targetProfileImageUrl: profileImageUrl,
             direction: direction
         )
 
@@ -143,6 +147,44 @@ struct SwipeService {
 
             completion(.success(snapshot.count.intValue))
         }
+    }
+
+    static func fetchSwipe(
+        for user: User,
+        completion: @escaping (Result<Swipe, NetworkingError>) -> Void
+    ) {
+        Firestore.firestore().collection("swipes")
+            .whereField("targetId", isEqualTo: user.uid)
+            .limit(to: 1)
+            .getDocuments { snapshot, error in
+                if let error {
+                    completion(
+                        .failure(.serverError(error.localizedDescription))
+                    )
+
+                    return
+                }
+
+                guard let snapshot,
+                    let document = snapshot.documents.first
+                else {
+                    completion(
+                        .failure(.serverError("There are no likes yet."))
+                    )
+
+                    return
+                }
+
+                do {
+                    let swipe = try document.data(as: Swipe.self)
+
+                    completion(.success(swipe))
+                } catch {
+                    completion(
+                        .failure(.serverError("Failed to get like data."))
+                    )
+                }
+            }
     }
 
 }

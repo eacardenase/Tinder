@@ -29,10 +29,12 @@ class MessagesHeader: UIView {
 
     weak var delegate: MessagesHeaderDelegate?
 
+    var profileImageUrl: URL? {
+        didSet { collectionView.reloadData() }
+    }
+
     var likesCount: Int? {
-        didSet {
-            collectionView.reloadData()
-        }
+        didSet { collectionView.reloadData() }
     }
 
     var matches = [Match]() {
@@ -207,7 +209,12 @@ extension MessagesHeader: UICollectionViewDataSource {
                 fatalError("Could not initialize LikesCell.")
             }
 
-            cell.likesCount = likesCount
+            let viewModel = LikesCellViewModel(
+                count: likesCount,
+                profileImageUrl: profileImageUrl
+            )
+
+            cell.viewModel = viewModel
 
             return cell
         case .matches:

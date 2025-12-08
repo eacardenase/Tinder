@@ -11,7 +11,7 @@ class LikesCell: UICollectionViewCell {
 
     // MARK: - Properties
 
-    var likesCount: Int? {
+    var viewModel: LikesCellViewModel? {
         didSet { configure() }
     }
 
@@ -30,8 +30,9 @@ class LikesCell: UICollectionViewCell {
         let imageView = UIImageView()
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.backgroundColor = .systemYellow.withAlphaComponent(0.3)
+//        imageView.backgroundColor = .systemYellow.withAlphaComponent(0.3)
         imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
 
         return imageView
     }()
@@ -202,12 +203,11 @@ extension LikesCell {
     }
 
     private func configure() {
-        guard let likesCount = likesCount else { return }
-
-        let viewModel = LikesCellViewModel(count: likesCount)
+        guard let viewModel else { return }
 
         likesLabel.text = viewModel.likesCountText
         titleLabel.text = viewModel.titleText
+        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
     }
 
 }

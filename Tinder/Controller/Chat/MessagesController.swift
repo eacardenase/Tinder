@@ -35,8 +35,7 @@ class MessagesController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        fetchLikes()
-        fetchMatches()
+        fetchData()
         setupViews()
         fetchConversations()
 
@@ -206,13 +205,36 @@ extension MessagesController {
         }
     }
 
-    private func fetchLikes() {
+    private func fetchData() {
+        fetchLikesCount()
+        fetchProfileImageUrl()
+        fetchMatches()
+    }
+
+    private func fetchLikesCount() {
         SwipeService.fetchLikesCount(for: user) { [weak self] result in
             guard let self else { return }
 
             switch result {
             case .success(let count):
                 self.headerView.likesCount = count
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+
+    private func fetchProfileImageUrl() {
+        SwipeService.fetchSwipe(for: user) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success(let swipe):
+                guard let url = URL(string: swipe.targetProfileImageUrl) else {
+                    return
+                }
+
+                self.headerView.profileImageUrl = url
             case .failure(let error):
                 print(error)
             }
