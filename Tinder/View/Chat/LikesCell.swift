@@ -30,7 +30,7 @@ class LikesCell: UICollectionViewCell {
         let imageView = UIImageView()
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
-//        imageView.backgroundColor = .systemYellow.withAlphaComponent(0.3)
+        imageView.backgroundColor = .systemYellow.withAlphaComponent(0.3)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
 
@@ -207,7 +207,11 @@ extension LikesCell {
 
         likesLabel.text = viewModel.likesCountText
         titleLabel.text = viewModel.titleText
-        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
+
+        guard let imageUrl = URL(string: viewModel.profileImageUrl)
+        else { return }
+
+        profileImageView.sd_setImage(with: imageUrl)
     }
 
 }

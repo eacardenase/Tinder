@@ -29,7 +29,7 @@ class MessagesHeader: UIView {
 
     weak var delegate: MessagesHeaderDelegate?
 
-    var profileImageUrl: URL? {
+    var profileImageUrl: String? {
         didSet { collectionView.reloadData() }
     }
 

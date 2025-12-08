@@ -230,11 +230,7 @@ extension MessagesController {
 
             switch result {
             case .success(let swipe):
-                guard let url = URL(string: swipe.targetProfileImageUrl) else {
-                    return
-                }
-
-                self.headerView.profileImageUrl = url
+                self.headerView.profileImageUrl = swipe.targetProfileImageUrl
             case .failure(let error):
                 print(error)
             }

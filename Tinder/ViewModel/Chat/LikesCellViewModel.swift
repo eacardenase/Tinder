@@ -12,7 +12,7 @@ struct LikesCellViewModel {
     // MARK: - Properties
 
     private let count: Int
-    let profileImageUrl: URL
+    let profileImageUrl: String
 
     var likesCountText: String {
         return count > 99 ? "99+" : "\(count)"
@@ -24,11 +24,11 @@ struct LikesCellViewModel {
 
     // MARK: - Initializers
 
-    init?(count: Int?, profileImageUrl: URL?) {
-        guard let count, let profileImageUrl else { return nil }
+    init?(count: Int?, profileImageUrl: String?) {
+        guard let count else { return nil }
 
         self.count = count
-        self.profileImageUrl = profileImageUrl
+        self.profileImageUrl = profileImageUrl ?? ""
     }
 
 }
