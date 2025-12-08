@@ -10,8 +10,8 @@ import Foundation
 struct Swipe: Codable, Hashable {
 
     let userId: String
+    let profileImageUrl: String
     let targetId: String
-    let targetProfileImageUrl: String
     let direction: SwipeDirection
 
 }

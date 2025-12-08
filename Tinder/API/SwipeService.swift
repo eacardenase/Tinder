@@ -24,8 +24,8 @@ struct SwipeService {
 
         let swipe = Swipe(
             userId: currentUserId,
-            targetId: user.uid,
-            targetProfileImageUrl: profileImageUrl,
+            profileImageUrl: profileImageUrl,
+            targetId: user.uid,            
             direction: direction
         )
 
