@@ -76,7 +76,7 @@ struct MatchService {
                 guard let snapshot,
                     let document = snapshot.documents.first
                 else {
-                    completion(.serverError("There are no likes yet."))
+                    completion(.serverError("There is no match to update."))
 
                     return
                 }
