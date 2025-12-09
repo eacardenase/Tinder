@@ -156,6 +156,10 @@ extension MessagesHeader {
         ])
     }
 
+    func reloadData() {
+        collectionView.reloadData()
+    }
+
 }
 
 // MARK: - UICollectionViewDataSource

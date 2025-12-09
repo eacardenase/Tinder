@@ -55,6 +55,42 @@ struct MatchService {
         }
     }
 
+    static func updateMatch(
+        for user: User,
+        completion: @escaping (NetworkingError?) -> Void
+    ) {
+        guard let currentUserId = AuthService.currentUser?.uid else { return }
+
+        Firestore.firestore().collection("matches_messages")
+            .document(currentUserId)
+            .collection("matches")
+            .whereField("profileUid", isEqualTo: user.uid)
+            .limit(to: 1)
+            .getDocuments { snapshot, error in
+                if let error {
+                    completion(.serverError(error.localizedDescription))
+
+                    return
+                }
+
+                guard let snapshot,
+                    let document = snapshot.documents.first
+                else {
+                    completion(.serverError("There are no likes yet."))
+
+                    return
+                }
+
+                document.reference.updateData(
+                    ["isNew": false]
+                ) { error in
+                    if let error {
+                        completion(.serverError(error.localizedDescription))
+                    }
+                }
+            }
+    }
+
     static func fetchMatches(
         for user: User,
         completion: @escaping (Result<[Match], NetworkingError>) -> Void

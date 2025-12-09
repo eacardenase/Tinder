@@ -53,6 +53,14 @@ class MessagesController: UITableViewController {
         )
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        fetchMatches()
+
+        headerView.reloadData()
+    }
+
 }
 
 // MARK: - UITableViewDataSource

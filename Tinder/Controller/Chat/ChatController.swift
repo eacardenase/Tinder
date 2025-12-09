@@ -49,6 +49,7 @@ class ChatController: UICollectionViewController {
         super.viewDidLoad()
 
         setupViews()
+        updateMatch()
         fetchMessages()
 
         collectionView.keyboardDismissMode = .interactive
@@ -183,6 +184,14 @@ extension ChatController: CustomInputAccessoryViewDelegate {
 // MARK: - API
 
 extension ChatController {
+
+    func updateMatch() {
+        MatchService.updateMatch(for: user) { error in
+            if let error {
+                print(error)
+            }
+        }
+    }
 
     func fetchMessages() {
         ChatService.fetchMessages(for: user) { [weak self] messages in
