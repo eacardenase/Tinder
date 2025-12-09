@@ -57,8 +57,6 @@ class MessagesController: UITableViewController {
         super.viewWillAppear(animated)
 
         fetchMatches()
-
-        headerView.reloadData()
     }
 
 }
