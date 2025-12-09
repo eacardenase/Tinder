@@ -12,5 +12,6 @@ struct Match: Codable {
     let profileUid: String
     let name: String
     let profileImageUrl: String
+    let isNew: Bool
 
 }

@@ -132,6 +132,7 @@ extension MatchCell {
 
         usernameLabel.text = viewModel.nameText
         profileImageView.sd_setImage(with: viewModel.profileImageUrl)
+        bubbleView.isHidden = viewModel.shouldShowBubble
     }
 
 }

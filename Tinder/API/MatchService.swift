@@ -25,13 +25,15 @@ struct MatchService {
         let currentUserMatch = Match(
             profileUid: currentUser.uid,
             name: currentUser.fullname,
-            profileImageUrl: currentUserImageUrl
+            profileImageUrl: currentUserImageUrl,
+            isNew: true
         )
 
         let matchedUserMatch = Match(
             profileUid: matchedUser.uid,
             name: matchedUser.fullname,
-            profileImageUrl: matchedUserImageUrl
+            profileImageUrl: matchedUserImageUrl,
+            isNew: true
         )
 
         do {

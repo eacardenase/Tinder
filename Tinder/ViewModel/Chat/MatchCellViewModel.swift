@@ -25,6 +25,10 @@ struct MatchCellViewModel {
         return URL(string: match.profileImageUrl)
     }
 
+    var shouldShowBubble: Bool {
+        return !match.isNew
+    }
+
     // MARK: - Initializers
 
     init(match: Match) {
