@@ -13,5 +13,6 @@ struct Swipe: Codable, Hashable {
     let profileImageUrl: String
     let targetId: String
     let direction: SwipeDirection
+    let didMatch: Bool
 
 }

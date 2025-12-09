@@ -25,8 +25,9 @@ struct SwipeService {
         let swipe = Swipe(
             userId: currentUserId,
             profileImageUrl: profileImageUrl,
-            targetId: user.uid,            
-            direction: direction
+            targetId: user.uid,
+            direction: direction,
+            didMatch: false
         )
 
         do {
@@ -94,6 +95,7 @@ struct SwipeService {
     ) {
         Firestore.firestore().collection("swipes")
             .whereField("userId", isEqualTo: user.uid)
+            .whereField("didMatch", isEqualTo: true)
             .getDocuments { snapshot, error in
                 if let error {
                     completion(
@@ -130,6 +132,7 @@ struct SwipeService {
         let query = Firestore.firestore().collection("swipes")
             .whereField("targetId", isEqualTo: user.uid)
             .whereField("direction", isEqualTo: 1)
+            .whereField("didMatch", isEqualTo: false)
 
         query.count.getAggregation(source: .server) { snapshot, error in
             if let error {
@@ -156,6 +159,7 @@ struct SwipeService {
     ) {
         Firestore.firestore().collection("swipes")
             .whereField("targetId", isEqualTo: user.uid)
+            .whereField("didMatch", isEqualTo: false)
             .limit(to: 1)
             .getDocuments { snapshot, error in
                 if let error {
