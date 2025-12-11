@@ -54,16 +54,13 @@ class LikesCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
         label.adjustsFontSizeToFitWidth = true
+        label.font = .preferredFont(forTextStyle: .body)
 
-        guard
-            let fontDescriptor: UIFontDescriptor = .preferredFontDescriptor(
-                withTextStyle: .body
-            ).withSymbolicTraits(.traitBold)
-        else {
-            fatalError("Could not instantiate font descriptor with bold trait.")
+        if let fontDescriptor: UIFontDescriptor = .preferredFontDescriptor(
+            withTextStyle: .body
+        ).withSymbolicTraits(.traitBold) {
+            label.font = UIFont(descriptor: fontDescriptor, size: 0)
         }
-
-        label.font = UIFont(descriptor: fontDescriptor, size: 0)
 
         return label
     }()

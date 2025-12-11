@@ -5,6 +5,7 @@
 //  Created by Edwin Cardenas on 10/8/25.
 //
 
+import GoogleSignIn
 import UIKit
 
 class LoginController: UIViewController {
@@ -82,6 +83,42 @@ class LoginController: UIViewController {
         return button
     }()
 
+    private lazy var googleLoginButton: UIButton = {
+//        let button = AuthButton(type: .system)
+//        
+//        button.setTitle("Log In", for: .normal)
+//        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
+//        
+//        button.addTarget(
+//            self,
+//            action: #selector(loginButtonTapped),
+//            for: .touchUpInside
+//        )
+//        
+//        return button
+        
+        
+        let button = UIButton(type: .system)
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(
+            UIImage(resource: .btnGoogleLightPressedIos).withRenderingMode(
+                .alwaysOriginal
+            ),
+            for: .normal
+        )
+        button.setTitle("  Log in with Google", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        button.addTarget(
+            self,
+            action: #selector(googleLoginButtonTapped),
+            for: .touchUpInside
+        )
+
+        return button
+    }()
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -103,6 +140,7 @@ extension LoginController {
             emailTextField,
             passwordTextField,
             loginButton,
+            googleLoginButton,
         ])
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -212,6 +250,37 @@ extension LoginController {
         controller.delegate = delegate
 
         navigationController?.pushViewController(controller, animated: true)
+    }
+
+    @objc func googleLoginButtonTapped(_ sender: UIButton) {
+        showLoader()
+
+        AuthService.signInWithGoogle(withPresenting: self) {
+            [weak self] result in
+
+            guard let self else { return }
+
+            self.showLoader(false)
+
+            switch result {
+            case .success(let user):
+                self.delegate?.authenticationComplete()
+            case .failure(let error):
+                if case .serverError(let message) = error {
+                    let alertController = UIAlertController(
+                        title: "Error",
+                        message: message,
+                        preferredStyle: .alert
+                    )
+
+                    alertController.addAction(
+                        UIAlertAction(title: "OK", style: .default)
+                    )
+
+                    self.present(alertController, animated: true)
+                }
+            }
+        }
     }
 
 }

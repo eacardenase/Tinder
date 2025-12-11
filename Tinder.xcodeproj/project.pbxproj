@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A500FE742E9B4FB00025F071 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = A500FE732E9B4FB00025F071 /* SDWebImage */; };
 		A505E9702EA19FE400253A11 /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = A505E96F2EA19FE400253A11 /* JGProgressHUD */; };
+		A57494BC2EEA2DA70031F7A9 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = A57494BB2EEA2DA70031F7A9 /* GoogleSignIn */; };
 		A5E34AB12E9836F700B35212 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A5E34A9E2E9836F700B35212 /* README.md */; };
 		A5E34B222E98859600B35212 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A5E34B212E98859600B35212 /* FirebaseAuth */; };
 		A5E34B242E98859600B35212 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = A5E34B232E98859600B35212 /* FirebaseCore */; };
@@ -53,6 +54,7 @@
 				A5E34B262E98859600B35212 /* FirebaseFirestore in Frameworks */,
 				A505E9702EA19FE400253A11 /* JGProgressHUD in Frameworks */,
 				A500FE742E9B4FB00025F071 /* SDWebImage in Frameworks */,
+				A57494BC2EEA2DA70031F7A9 /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,6 +104,7 @@
 				A5E34B272E98859600B35212 /* FirebaseStorage */,
 				A500FE732E9B4FB00025F071 /* SDWebImage */,
 				A505E96F2EA19FE400253A11 /* JGProgressHUD */,
+				A57494BB2EEA2DA70031F7A9 /* GoogleSignIn */,
 			);
 			productName = Tinder;
 			productReference = A57673F32E9189E8007E8A12 /* Tinder.app */;
@@ -135,6 +138,7 @@
 				A5E34B202E98859600B35212 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				A500FE722E9B4FB00025F071 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 				A505E96E2EA19FE400253A11 /* XCRemoteSwiftPackageReference "JGProgressHUD" */,
+				A57494BA2EEA2DA70031F7A9 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A57673F42E9189E8007E8A12 /* Products */;
@@ -385,6 +389,14 @@
 				minimumVersion = 2.2.0;
 			};
 		};
+		A57494BA2EEA2DA70031F7A9 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
 		A5E34B202E98859600B35212 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -405,6 +417,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A505E96E2EA19FE400253A11 /* XCRemoteSwiftPackageReference "JGProgressHUD" */;
 			productName = JGProgressHUD;
+		};
+		A57494BB2EEA2DA70031F7A9 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A57494BA2EEA2DA70031F7A9 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
 		};
 		A5E34B212E98859600B35212 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
