@@ -188,55 +188,24 @@ struct AuthService {
                     return
                 }
 
-                let user = User(
-                    uid: uid,
-                    fullname: fullname,
-                    email: email,
-                    age: 18,
-                    imageUrls: []
-                )
+                UserService.fetchUser(withId: uid) { result in
+                    switch result {
+                    case .success(let user):
+                        completion(.success(user))
+                    case .failure:
+                        let user = User(
+                            uid: uid,
+                            fullname: fullname,
+                            email: email,
+                            age: 18,
+                            imageUrls: []
+                        )
 
-                UserService.store(user, completion: completion)
+                        UserService.store(user, completion: completion)
+                    }
+                }
             }
-
         }
-
-        //        GIDSignIn.sharedInstance.signIn(
-        //            withPresenting: presentingViewController
-        //        ) {
-        //            Auth.auth().signIn(with: credential) { result, error in
-        //                if let error {
-        //                    completion(
-        //                        .failure(.serverError(error.localizedDescription))
-        //                    )
-        //
-        //                    return
-        //                }
-        //
-        //                guard let uid = result?.user.uid else {
-        //                    return
-        //                }
-        //
-        //                fetchUser(useFirestore: useFirestore) { result in
-        //                    switch result {
-        //                    case .success(let user):
-        //                        completion(.success(user))
-        //                    case .failure:
-        //                        let values = [
-        //                            "email": email,
-        //                            "fullname": fullname,
-        //                        ]
-        //
-        //                        signUpFirebaseUser(
-        //                            withUid: uid,
-        //                            data: values,
-        //                            useFirestore: useFirestore,
-        //                            completion: completion
-        //                        )
-        //                    }
-        //                }
-        //            }
-        //        }
     }
 
     static func resetPassword(
@@ -244,41 +213,6 @@ struct AuthService {
         completion: @escaping (Error?) -> Void
     ) {
         Auth.auth().sendPasswordReset(withEmail: email, completion: completion)
-    }
-
-    static func signUpFirebaseUser(
-        withUid uid: String,
-        data: [String: String],
-        useFirestore: Bool = true,
-        completion: @escaping (Result<User, NetworkingError>) -> Void
-    ) {
-        //        let values: [String: Any] = [
-        //            "email": data["email"] ?? "",
-        //            "fullname": data["fullname"] ?? "",
-        //            "hasSeenOnboarding": false,
-        //        ]
-        //
-        //        let credentials = AuthCredentials(
-        //            fullname: fullname,
-        //            email: email,
-        //            password: password,
-        //            profileImage: profileImage
-        //        )
-        //
-        //        Constants.FirebaseFirestore.USERS_COLLECTION.document(uid).setData(
-        //            values
-        //        ) { error in
-        //            if let error {
-        //                completion(
-        //                    .failure(.serverError(error.localizedDescription))
-        //                )
-        //
-        //                return
-        //            }
-        //
-        //            fetchUser(useFirestore: true, completion: completion)
-        //        }
-
     }
 
 }
