@@ -5,6 +5,7 @@
 //  Created by Edwin Cardenas on 11/26/25.
 //
 
+import SDWebImage
 import UIKit
 
 class ChatController: UICollectionViewController {
@@ -78,7 +79,62 @@ extension ChatController {
     private func setupViews() {
         collectionView.backgroundColor = .white
 
-        navigationItem.title = user.fullname
+        let titleView = UIView()
+        let button = UIButton(type: .system)
+        let profileImageView = UIImageView()
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle(user.fullname, for: .normal)
+        button.titleLabel?.font = .preferredFont(forTextStyle: .headline)
+        button.tintColor = .black
+
+        profileImageView.translatesAutoresizingMaskIntoConstraints = false
+        profileImageView.contentMode = .scaleAspectFill
+        profileImageView.clipsToBounds = true
+
+        if let imageUrl = user.imageUrls.first {
+            profileImageView.sd_setImage(
+                with: URL(string: imageUrl)
+            )
+        }
+
+        titleView.addSubview(profileImageView)
+        titleView.addSubview(button)
+
+        // profileImageView
+        let profileImageViewHeightAnchor = profileImageView.heightAnchor
+            .constraint(equalToConstant: 35)
+
+        NSLayoutConstraint.activate([
+            profileImageView.topAnchor.constraint(equalTo: titleView.topAnchor),
+            profileImageView.leadingAnchor.constraint(
+                equalTo: titleView.leadingAnchor
+            ),
+            profileImageView.bottomAnchor.constraint(
+                equalTo: titleView.bottomAnchor
+            ),
+            profileImageViewHeightAnchor,
+            profileImageView.widthAnchor.constraint(
+                equalTo: profileImageView.heightAnchor
+            ),
+        ])
+
+        // button
+        NSLayoutConstraint.activate([
+            button.centerYAnchor.constraint(
+                equalTo: profileImageView.centerYAnchor
+            ),
+            button.leadingAnchor.constraint(
+                equalTo: profileImageView.trailingAnchor,
+                constant: 8
+            ),
+            button.trailingAnchor.constraint(equalTo: titleView.trailingAnchor),
+        ])
+
+        profileImageView.layer.cornerRadius =
+            profileImageViewHeightAnchor.constant / 2
+
+        navigationItem.titleView = titleView
     }
 
 }
