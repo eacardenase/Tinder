@@ -12,7 +12,6 @@ class LoginController: UIViewController {
 
     // MARK: - Properties
 
-    private var viewModel = LoginViewModel()
     weak var delegate: AuthenticationDelegate?
 
     private let iconImageView: UIImageView = {
@@ -28,77 +27,8 @@ class LoginController: UIViewController {
         return imageView
     }()
 
-    private lazy var emailTextField: UITextField = {
-        let textField = AuthTextField(placeholder: "Email")
-
-        textField.keyboardType = .emailAddress
-        textField.addTarget(
-            self,
-            action: #selector(textDidChange),
-            for: .editingChanged
-        )
-
-        return textField
-    }()
-
-    private lazy var passwordTextField: UITextField = {
-        let textField = AuthTextField(placeholder: "Password", isSecure: true)
-
-        textField.addTarget(
-            self,
-            action: #selector(textDidChange),
-            for: .editingChanged
-        )
-
-        return textField
-    }()
-
-    private lazy var loginButton: UIButton = {
-        let button = AuthButton(type: .system)
-
-        button.setTitle("Log In", for: .normal)
-        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
-
-        button.addTarget(
-            self,
-            action: #selector(loginButtonTapped),
-            for: .touchUpInside
-        )
-
-        return button
-    }()
-
-    private lazy var showRegistrationButton: UIButton = {
-        let button = AttributedAuthButton(
-            message: "Don't have an account? ",
-            actionText: "Sign Up",
-        )
-
-        button.addTarget(
-            self,
-            action: #selector(showRegistrationButtonTapped),
-            for: .touchUpInside
-        )
-
-        return button
-    }()
-
     private lazy var googleLoginButton: UIButton = {
-//        let button = AuthButton(type: .system)
-//        
-//        button.setTitle("Log In", for: .normal)
-//        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
-//        
-//        button.addTarget(
-//            self,
-//            action: #selector(loginButtonTapped),
-//            for: .touchUpInside
-//        )
-//        
-//        return button
-        
-        
-        let button = UIButton(type: .system)
+        let button = AuthButton(type: .system)
 
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(
@@ -136,20 +66,8 @@ extension LoginController {
     private func setupViews() {
         navigationController?.navigationBar.isHidden = true
 
-        let stackView = UIStackView(arrangedSubviews: [
-            emailTextField,
-            passwordTextField,
-            loginButton,
-            googleLoginButton,
-        ])
-
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.spacing = 16
-
         view.addSubview(iconImageView)
-        view.addSubview(stackView)
-        view.addSubview(showRegistrationButton)
+        view.addSubview(googleLoginButton)
 
         // iconImageView
         NSLayoutConstraint.activate([
@@ -164,30 +82,18 @@ extension LoginController {
             ),
         ])
 
-        // stackView
+        // googleLoginButton
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(
-                equalTo: iconImageView.bottomAnchor,
-                constant: 24
-            ),
-            stackView.leadingAnchor.constraint(
+            googleLoginButton.leadingAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.leadingAnchor,
                 constant: 32
             ),
-            stackView.trailingAnchor.constraint(
+            googleLoginButton.trailingAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.trailingAnchor,
                 constant: -32
             ),
-        ])
-
-        // showRegistrationButton
-        NSLayoutConstraint.activate([
-            showRegistrationButton.centerXAnchor.constraint(
-                equalTo: view.centerXAnchor
-            ),
-            showRegistrationButton.bottomAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                constant: -8
+            googleLoginButton.centerYAnchor.constraint(
+                equalTo: view.centerYAnchor
             ),
         ])
     }
@@ -197,60 +103,6 @@ extension LoginController {
 // MARK: - Actions
 
 extension LoginController {
-
-    @objc func textDidChange(_ sender: UITextField) {
-        if sender === emailTextField {
-            viewModel.email = sender.text
-        } else if sender === passwordTextField {
-            viewModel.password = sender.text
-        }
-
-        updateForm()
-    }
-
-    @objc func loginButtonTapped(_ sender: UIButton) {
-        guard
-            let email = viewModel.email,
-            let password = viewModel.password
-        else {
-            return
-        }
-
-        showLoader()
-
-        AuthService.logUserIn(withEmail: email, password: password) {
-            [weak self] error in
-
-            guard let self else { return }
-
-            self.showLoader(false)
-
-            if let error {
-                let alertController = UIAlertController(
-                    title: "Error",
-                    message: error.localizedDescription,
-                    preferredStyle: .alert
-                )
-
-                alertController.addAction(
-                    UIAlertAction(title: "OK", style: .default)
-                )
-
-                self.present(alertController, animated: true)
-
-                return
-            }
-
-            self.delegate?.authenticationComplete()
-        }
-    }
-
-    @objc func showRegistrationButtonTapped(_ sender: UIButton) {
-        let controller = RegistrationController()
-        controller.delegate = delegate
-
-        navigationController?.pushViewController(controller, animated: true)
-    }
 
     @objc func googleLoginButtonTapped(_ sender: UIButton) {
         showLoader()
@@ -281,18 +133,6 @@ extension LoginController {
                 }
             }
         }
-    }
-
-}
-
-// MARK: - AuthenticationControllerProtocol
-
-extension LoginController: AuthenticationProtocol {
-
-    func updateForm() {
-        loginButton.isEnabled = viewModel.shouldEnableButton
-        loginButton.backgroundColor = viewModel.buttonBackgroundColor
-        loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
     }
 
 }

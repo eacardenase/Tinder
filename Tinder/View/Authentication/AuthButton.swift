@@ -17,10 +17,9 @@ class AuthButton: UIButton {
         translatesAutoresizingMaskIntoConstraints = false
         layer.cornerRadius = 8
         layer.borderWidth = 2
-        layer.borderColor = UIColor(white: 1, alpha: 0.7).cgColor
-        isEnabled = false
-        setTitleColor(.white.withAlphaComponent(0.7), for: .normal)
-        backgroundColor = .white.withAlphaComponent(0.2)
+        layer.borderColor = UIColor.white.cgColor
+        setTitleColor(.white, for: .normal)
+        backgroundColor = .clear
     }
 
     required init?(coder: NSCoder) {
