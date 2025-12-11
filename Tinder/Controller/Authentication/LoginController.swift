@@ -68,36 +68,41 @@ class LoginController: UIViewController {
         return button
     }()
 
-    private lazy var showRegistrationButton: UIButton = {
-        let button = AttributedAuthButton(
-            message: "Don't have an account? ",
-            actionText: "Sign Up",
+    private lazy var forgotPasswordButton: UIButton = {
+        let button = UIButton()
+
+        let attributedTitle = NSMutableAttributedString(
+            string: "Forgot your password? ",
+            attributes: [
+                .foregroundColor: UIColor.white.withAlphaComponent(0.87),
+                .font: UIFont.boldSystemFont(ofSize: 15),
+            ]
         )
 
+        attributedTitle.append(
+            NSAttributedString(
+                string: "Get help signing in.",
+                attributes: [
+                    .foregroundColor: UIColor.white,
+                    .font: UIFont.boldSystemFont(ofSize: 15),
+                ]
+            )
+        )
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setAttributedTitle(attributedTitle, for: .normal)
         button.addTarget(
             self,
-            action: #selector(showRegistrationButtonTapped),
+            action: #selector(showPasswordResetController),
             for: .touchUpInside
         )
 
         return button
     }()
 
+    private let dividerView = DividerView()
+
     private lazy var googleLoginButton: UIButton = {
-//        let button = AuthButton(type: .system)
-//        
-//        button.setTitle("Log In", for: .normal)
-//        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
-//        
-//        button.addTarget(
-//            self,
-//            action: #selector(loginButtonTapped),
-//            for: .touchUpInside
-//        )
-//        
-//        return button
-        
-        
         let button = UIButton(type: .system)
 
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -113,6 +118,21 @@ class LoginController: UIViewController {
         button.addTarget(
             self,
             action: #selector(googleLoginButtonTapped),
+            for: .touchUpInside
+        )
+
+        return button
+    }()
+
+    private lazy var showRegistrationButton: UIButton = {
+        let button = AttributedAuthButton(
+            message: "Don't have an account? ",
+            actionText: "Sign Up",
+        )
+
+        button.addTarget(
+            self,
+            action: #selector(showRegistrationButtonTapped),
             for: .touchUpInside
         )
 
@@ -140,15 +160,25 @@ extension LoginController {
             emailTextField,
             passwordTextField,
             loginButton,
-            googleLoginButton,
         ])
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 16
 
+        let secondStack = UIStackView(arrangedSubviews: [
+            forgotPasswordButton,
+            dividerView,
+            googleLoginButton,
+        ])
+
+        secondStack.translatesAutoresizingMaskIntoConstraints = false
+        secondStack.axis = .vertical
+        secondStack.spacing = 28
+
         view.addSubview(iconImageView)
         view.addSubview(stackView)
+        view.addSubview(secondStack)
         view.addSubview(showRegistrationButton)
 
         // iconImageView
@@ -177,6 +207,20 @@ extension LoginController {
             stackView.trailingAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.trailingAnchor,
                 constant: -32
+            ),
+        ])
+
+        // secondStack
+        NSLayoutConstraint.activate([
+            secondStack.topAnchor.constraint(
+                equalTo: stackView.bottomAnchor,
+                constant: 24
+            ),
+            secondStack.leadingAnchor.constraint(
+                equalTo: stackView.leadingAnchor
+            ),
+            secondStack.trailingAnchor.constraint(
+                equalTo: stackView.trailingAnchor
             ),
         ])
 
@@ -245,6 +289,18 @@ extension LoginController {
         }
     }
 
+    @objc private func showPasswordResetController(_ sender: UIButton) {
+        let resetPasswordController = ResetPasswordController()
+
+        resetPasswordController.email = emailTextField.text
+        resetPasswordController.delegate = self
+
+        navigationController?.pushViewController(
+            resetPasswordController,
+            animated: true
+        )
+    }
+
     @objc func showRegistrationButtonTapped(_ sender: UIButton) {
         let controller = RegistrationController()
         controller.delegate = delegate
@@ -293,6 +349,26 @@ extension LoginController: AuthenticationProtocol {
         loginButton.isEnabled = viewModel.shouldEnableButton
         loginButton.backgroundColor = viewModel.buttonBackgroundColor
         loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
+    }
+
+}
+
+// MARK: - ResetPasswordControllerDelegate
+
+extension LoginController: ResetPasswordControllerDelegate {
+
+    func didSendResetPasswordLink() {
+        navigationController?.popViewController(animated: true)
+
+        let alertController = UIAlertController(
+            title: "Success",
+            message: "We sent a link to your email to reset your password",
+            preferredStyle: .alert
+        )
+
+        alertController.addAction(UIAlertAction(title: "OK", style: .default))
+
+        present(alertController, animated: true)
     }
 
 }
