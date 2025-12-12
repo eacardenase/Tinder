@@ -30,7 +30,7 @@ struct AuthService {
     }
 
     static func createUser(
-        wih credentials: AuthCredentials,
+        with credentials: AuthCredentials,
         completion: @escaping (Result<User, NetworkingError>) -> Void
     ) {
         Auth.auth().createUser(
