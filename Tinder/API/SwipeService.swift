@@ -131,7 +131,7 @@ struct SwipeService {
     ) {
         let query = Firestore.firestore().collection("swipes")
             .whereField("targetId", isEqualTo: user.uid)
-            .whereField("direction", isEqualTo: 1)
+            .whereField("direction", isEqualTo: "right")
             .whereField("didMatch", isEqualTo: false)
 
         query.count.getAggregation(source: .server) { snapshot, error in

@@ -155,7 +155,7 @@ extension HomeController {
         nextCard?.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
         nextCard?.alpha = 0.5
 
-        let directionValue = CGFloat(direction.rawValue)
+        let directionValue: CGFloat = direction == .right ? 1 : -1
         let angle: CGFloat = (.pi / 6) * directionValue
         let xTranslation: CGFloat = topCard.frame.width * 1.5 * directionValue
 

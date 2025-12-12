@@ -8,9 +8,9 @@
 import SDWebImage
 import UIKit
 
-enum SwipeDirection: Int, Codable {
-    case left = -1
-    case right = 1
+enum SwipeDirection: String, Codable {
+    case left
+    case right
 }
 
 protocol CardViewDelegate: AnyObject {
@@ -207,14 +207,14 @@ extension CardView {
         let shouldDismissCard = abs(translation.x) > swapThreshold
         let direction: SwipeDirection =
             translation.x > swapThreshold ? .right : .left
+        let directionValue: CGFloat = direction == .right ? 1 : -1
 
         let animation = UIViewPropertyAnimator(
             duration: 0.75,
             dampingRatio: 0.7
         ) {
             if shouldDismissCard {
-                let xTransalation =
-                    CGFloat(direction.rawValue) * self.frame.width
+                let xTransalation = directionValue * self.frame.width
                 let offScreenTransform = self.transform.translatedBy(
                     x: xTransalation,
                     y: 0
@@ -232,7 +232,7 @@ extension CardView {
 
         animation.addCompletion { [weak self] _ in
             guard let self else { return }
-            
+
             if shouldDismissCard {
                 self.delegate?.cardView(self, didSwipeWith: direction)
             }
