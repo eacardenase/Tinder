@@ -237,16 +237,15 @@ extension RegistrationController {
             profileImage: profileImage
         )
 
-        AuthService.createUser(with: credentials) { [weak self] result in
-            guard let self else { return }
+        Task {
+            do {
+                let user = try await AuthService.createrUser(with: credentials)
 
-            self.showLoader(false)
+                self.showLoader(false)
 
-            switch result {
-            case .success:
                 self.delegate?.authenticationComplete()
-            case .failure(let error):
-                if case .serverError(let message) = error {
+            } catch {
+                if case NetworkingError.serverError(let message) = error {
                     let alertController = UIAlertController(
                         title: "Error",
                         message: message,
@@ -260,6 +259,7 @@ extension RegistrationController {
                     self.present(alertController, animated: true)
                 }
             }
+
         }
     }
 

@@ -29,6 +29,29 @@ struct AuthService {
         return Auth.auth().currentUser
     }
 
+    static func createrUser(
+        with credentials: AuthCredentials
+    ) async throws -> User {
+        let authResult = try await Auth.auth().createUser(
+            withEmail: credentials.email,
+            password: credentials.password
+        )
+        let imageUrl = try await StorageService.upload(
+            credentials.profileImage,
+            forUserId: authResult.user.uid
+        )
+
+        return User(
+            uid: authResult.user.uid,
+            fullname: credentials.fullname,
+            email: credentials.email,
+            age: 18,
+            imageUrls: [
+                imageUrl.absoluteString
+            ]
+        )
+    }
+
     static func createUser(
         with credentials: AuthCredentials,
         completion: @escaping (Result<User, NetworkingError>) -> Void
@@ -94,6 +117,13 @@ struct AuthService {
         }
 
         UserService.fetchUser(withId: currentUserId, completion: completion)
+    }
+
+    static func logUserIn(
+        withEmail email: String,
+        password: String
+    ) async throws {
+        try await Auth.auth().signIn(withEmail: email, password: password)
     }
 
     static func logUserIn(

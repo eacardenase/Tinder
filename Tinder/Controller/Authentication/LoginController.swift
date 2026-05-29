@@ -262,14 +262,17 @@ extension LoginController {
 
         showLoader()
 
-        AuthService.logUserIn(withEmail: email, password: password) {
-            [weak self] error in
+        Task {
+            showLoader(false)
 
-            guard let self else { return }
+            do {
+                try await AuthService.logUserIn(
+                    withEmail: email,
+                    password: password
+                )
 
-            self.showLoader(false)
-
-            if let error {
+                self.delegate?.authenticationComplete()
+            } catch {
                 let alertController = UIAlertController(
                     title: "Error",
                     message: error.localizedDescription,
@@ -281,11 +284,7 @@ extension LoginController {
                 )
 
                 self.present(alertController, animated: true)
-
-                return
             }
-
-            self.delegate?.authenticationComplete()
         }
     }
 
