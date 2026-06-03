@@ -41,7 +41,7 @@ struct AuthService {
             forUserId: authResult.user.uid
         )
 
-        return User(
+        let user = User(
             uid: authResult.user.uid,
             fullname: credentials.fullname,
             email: credentials.email,
@@ -50,6 +50,8 @@ struct AuthService {
                 imageUrl.absoluteString
             ]
         )
+
+        return try UserService.store(user)
     }
 
     static func createUser(
