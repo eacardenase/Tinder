@@ -147,6 +147,11 @@ struct AuthService {
         }
     }
 
+    static func logUserOut() throws {
+        try Auth.auth().signOut()
+    }
+
+    @available(*, deprecated, renamed: "logUserOut()")
     static func logUserOut(completion: @escaping (Error?) -> Void) {
         do {
             try Auth.auth().signOut()

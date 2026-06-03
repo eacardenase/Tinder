@@ -247,19 +247,17 @@ extension HomeController {
     func logout() {
         showLoader()
 
-        AuthService.logUserOut { [weak self] error in
-            guard let self else { return }
+        do {
+            showLoader(false)
 
-            self.showLoader(false)
-
-            if let error {
-                print(
-                    "DEBUG: Failed to log out with error: \(error.localizedDescription)"
-                )
-            }
-
-            self.presentLoginController()
+            try AuthService.logUserOut()
+        } catch {
+            print(
+                "DEBUG: Failed to log out with error: \(error.localizedDescription)"
+            )
         }
+
+        presentLoginController()
     }
 
     func fetchUsers() {
