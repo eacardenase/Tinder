@@ -180,29 +180,16 @@ extension ResetPasswordController {
 
         showLoader()
 
-        AuthService.resetPassword(withEmail: email) { [weak self] error in
-            guard let self else { return }
+        Task {
+            showLoader(false)
 
-            self.showLoader(false)
+            do {
+                try await AuthService.resetPassword(withEmail: email)
 
-            if let error {
-                let alertController = UIAlertController(
-                    title: "Success",
-                    message:
-                        "We sent a link to your email to reset your password",
-                    preferredStyle: .alert
-                )
-
-                alertController.addAction(
-                    UIAlertAction(title: "OK", style: .default)
-                )
-
-                self.present(alertController, animated: true)
-
-                return
+                self.delegate?.didSendResetPasswordLink()
+            } catch {
+                print(error.localizedDescription)
             }
-
-            self.delegate?.didSendResetPasswordLink()
         }
     }
 

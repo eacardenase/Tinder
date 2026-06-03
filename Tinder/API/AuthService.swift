@@ -240,6 +240,11 @@ struct AuthService {
         }
     }
 
+    static func resetPassword(withEmail email: String) async throws {
+        try await Auth.auth().sendPasswordReset(withEmail: email)
+    }
+
+    @available(*, deprecated, renamed: "resetPassword(withEmail:)")
     static func resetPassword(
         withEmail email: String,
         completion: @escaping (Error?) -> Void
