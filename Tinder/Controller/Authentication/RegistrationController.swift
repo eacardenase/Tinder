@@ -246,7 +246,7 @@ extension RegistrationController {
 
         Task {
             do {
-                let user = try await AuthService.createrUser(with: credentials)
+                let _ = try await AuthService.createrUser(with: credentials)
 
                 self.showLoader(false)
 

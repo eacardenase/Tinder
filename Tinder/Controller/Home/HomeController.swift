@@ -235,7 +235,9 @@ extension HomeController {
                 self.user = user
                 self.fetchUsers()
             case .failure(let error):
-                print("DEBUG: \(error.localizedDescription)")
+                if case .serverError(let message) = error {
+                    print(message)
+                }
 
                 self.presentLoginController()
             }
@@ -492,7 +494,11 @@ extension HomeController: AuthenticationDelegate {
                 self.user = user
                 self.fetchUsers()
             case .failure(let error):
-                print("DEBUG: \(error.localizedDescription)")
+                if case .serverError(let message) = error {
+                    print(
+                        "DEBUG: Failed to authenticate with error: \(message)"
+                    )
+                }
             }
         }
     }
