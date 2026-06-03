@@ -318,7 +318,7 @@ extension LoginController {
             self.showLoader(false)
 
             switch result {
-            case .success(let user):
+            case .success:
                 self.delegate?.authenticationComplete()
             case .failure(let error):
                 if case .serverError(let message) = error {

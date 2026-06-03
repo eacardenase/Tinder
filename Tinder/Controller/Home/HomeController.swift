@@ -146,7 +146,7 @@ extension HomeController {
     }
 
     private func performSwipe(withDirection direction: SwipeDirection) {
-        guard let topCard = topCardView, let currentUser = user else { return }
+        guard let topCard = topCardView, user != nil else { return }
 
         previousCard = cardViews.popLast()
 
@@ -405,7 +405,7 @@ extension HomeController: SettingsControllerDelegate {
 extension HomeController: CardViewDelegate {
 
     func cardView(_ view: CardView, didSwipeWith direction: SwipeDirection) {
-        guard let topCard = topCardView, let currentUser = user else { return }
+        guard let topCard = topCardView, user != nil else { return }
 
         saveSwipeAndCheckForMatch(
             for: topCard.viewModel.user,

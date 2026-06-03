@@ -54,6 +54,7 @@ struct AuthService {
         return try UserService.store(user)
     }
 
+    @available(*, deprecated, renamed: "createUser(with:)")
     static func createUser(
         with credentials: AuthCredentials,
         completion: @escaping (Result<User, NetworkingError>) -> Void
