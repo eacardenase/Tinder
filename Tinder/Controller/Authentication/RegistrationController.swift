@@ -96,6 +96,13 @@ class RegistrationController: UIViewController {
 
         configureGradientLayer()
         setupViews()
+
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
+
+        view.addGestureRecognizer(tapGesture)
     }
 
     private lazy var signUpButton: UIButton = {
@@ -259,12 +266,15 @@ extension RegistrationController {
                     self.present(alertController, animated: true)
                 }
             }
-
         }
     }
 
     @objc func showLoginButtonTapped(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
+    }
+
+    @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
+        view.endEditing(true)
     }
 
 }
