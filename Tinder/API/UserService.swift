@@ -38,6 +38,16 @@ struct UserService {
         }
     }
 
+    static func fetchUser(withId userId: String) async throws -> User {
+        return
+            try await Firestore
+            .firestore()
+            .collection("users")
+            .document(userId)
+            .getDocument(as: User.self)
+    }
+
+    @available(*, deprecated, renamed: "fetchUser(withId:)")
     static func fetchUser(
         withId userId: String,
         completion: @escaping (Result<User, NetworkingError>) -> Void

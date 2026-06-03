@@ -227,15 +227,14 @@ extension HomeController {
 extension HomeController {
 
     func authenticateUser() {
-        AuthService.verifyLogin { [weak self] result in
-            guard let self else { return }
+        Task {
+            do {
+                let user = try await AuthService.verifyLogin()
 
-            switch result {
-            case .success(let user):
                 self.user = user
                 self.fetchUsers()
-            case .failure(let error):
-                if case .serverError(let message) = error {
+            } catch {
+                if case NetworkingError.serverError(let message) = error {
                     print(message)
                 }
 
@@ -484,19 +483,14 @@ extension HomeController: AuthenticationDelegate {
     func authenticationComplete() {
         dismiss(animated: true)
 
-        AuthService.verifyLogin { [weak self] result in
-            guard let self else { return }
+        Task {
+            do {
+                let user = try await AuthService.verifyLogin()
 
-            switch result {
-            case .success(let user):
                 self.user = user
                 self.fetchUsers()
-            case .failure(let error):
-                if case .serverError(let message) = error {
-                    print(
-                        "DEBUG: Failed to authenticate with error: \(message)"
-                    )
-                }
+            } catch {
+                print(error.localizedDescription)
             }
         }
     }

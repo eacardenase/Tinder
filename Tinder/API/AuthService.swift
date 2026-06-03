@@ -103,6 +103,19 @@ struct AuthService {
         }
     }
 
+    static func verifyLogin() async throws -> User {
+        guard
+            let currentUserId = Auth.auth().currentUser?.uid
+        else {
+            throw NetworkingError.serverError(
+                "Failed to get user, current user is nil."
+            )
+        }
+
+        return try await UserService.fetchUser(withId: currentUserId)
+    }
+
+    @available(*, deprecated, renamed: "verifyLogin()")
     static func verifyLogin(
         completion: @escaping (Result<User, NetworkingError>) -> Void
     ) {
@@ -128,6 +141,7 @@ struct AuthService {
         try await Auth.auth().signIn(withEmail: email, password: password)
     }
 
+    @available(*, deprecated, renamed: "logUserIn(withEmail:password:)")
     static func logUserIn(
         withEmail email: String,
         password: String,
